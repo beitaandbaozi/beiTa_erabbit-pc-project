@@ -1,7 +1,7 @@
 // 用户模块
 export default {
   namespaced: true,
-  state() {
+  state () {
     return {
       // 用户信息
       profile: {
@@ -16,7 +16,7 @@ export default {
   },
   mutations: {
     // 修改用户信息
-    setUser(state, payload) {
+    setUser (state, payload) {
       state.profile = payload
     }
   }
