@@ -6,10 +6,13 @@
 
 <script>
 export default {
-  name: 'HomePages',
+  name: "HomePages",
 };
 </script>
 
-<style lang='less'>
-
+<style scoped lang='less'>
+.container {
+  .hoverShadow();
+  color:@xtxColor
+}
 </style>
