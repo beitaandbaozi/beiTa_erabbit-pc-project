@@ -3,6 +3,8 @@
   <AppNavbar></AppNavbar>
   <!-- 头部组件 -->
   <AppHeader></AppHeader>
+  <!-- 吸顶组件 -->
+  <AppHeaderStick></AppHeaderStick>
   <!-- 内容容器 -->
   <div class="app-body">
     <!-- 二级路由 -->
@@ -16,6 +18,7 @@
 import AppNavbar from "@/components/app-navbar";
 import AppHeader from "@/components/app-header";
 import AppFooter from "@/components/app-footer";
+import AppHeaderStick from "@/components/app-header-sticky"
 import { useStore } from "vuex";
 export default {
   name: "Layout",
@@ -23,6 +26,7 @@ export default {
     AppNavbar,
     AppHeader,
     AppFooter,
+    AppHeaderStick
   },
   setup () {
     const store = useStore();
