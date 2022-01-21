@@ -16,12 +16,18 @@
 import AppNavbar from "@/components/app-navbar";
 import AppHeader from "@/components/app-header";
 import AppFooter from "@/components/app-footer";
+import { useStore } from "vuex";
 export default {
   name: "Layout",
   components: {
     AppNavbar,
     AppHeader,
     AppFooter,
+  },
+  setup () {
+    const store = useStore();
+    // 获取数据
+    store.dispatch('category/getList')
   },
 };
 </script>
