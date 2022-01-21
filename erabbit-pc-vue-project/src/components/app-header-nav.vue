@@ -3,15 +3,15 @@
     <li class="home">
       <RouterLink to="/">首页</RouterLink>
     </li>
-    <li v-for="item in list" :key="item.id">
-      <RouterLink to="/">{{item.name}}</RouterLink>
-      <div class="layer">
+    <li v-for="item in list" :key="item.id" @mouseenter="show(item.id)" @mouseleave="hide(item.id)">
+      <RouterLink :to="`/category/${item.id}`" @click="hide(item.id)">{{item.name}}</RouterLink>
+      <div class="layer" :class="{open:item.open}">
         <ul>
           <li
             v-for="sub in item.children"
             :key="sub.id"
           >
-            <RouterLink to="/">
+            <RouterLink :to="`/category/sub/${sub.id}`" @click="hide(item.id)">
               <img
                 :src="sub.picture"
                 alt=""
@@ -35,7 +35,17 @@ export default {
     const list = computed(() => {
       return store.state.category.list;
     });
-    return { list };
+    // 跳转的时候不会关闭二级类目，通过定义一个数据来控制
+    // 1、每个分类（vuex）加上open数据
+    // 2、提供显示和隐藏函数，修改open数据
+    // 3、组件中使用vuex中的函数，使用事件来绑定
+    const show = (id) => {
+      store.commit('category/show', id)
+    }
+    const hide = (id) => {
+      store.commit('category/hide', id)
+    }
+    return { list, show, hide };
   },
 };
 </script>
@@ -63,15 +73,19 @@ export default {
         border-bottom: 1px solid @xtxColor;
       }
       // 显示二级类目
-      > .layer {
-        height: 132px;
-        opacity: 1;
-      }
+      //> .layer {
+      //  height: 132px;
+      //  opacity: 1;
+      //}
     }
   }
 }
 // 二级类目弹层
 .layer {
+  &.open {
+    height: 132px;
+    opacity: 1;
+  }
   width: 1240px;
   background-color: #fff;
   position: absolute;

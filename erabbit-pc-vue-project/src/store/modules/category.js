@@ -13,6 +13,16 @@ export default {
   mutations: {
     setList (state, payload) {
       state.list = payload
+    },
+    // 定义show和hide函数，控制当前分类的二级分类显示和隐藏
+    show (state, id) {
+      // 当前分类
+      const currCategory = state.list.find(item => item.id === id)
+      currCategory.open = true
+    },
+    hide (state, id) {
+      const currCategory = state.list.find(item => item.id === id)
+      currCategory.open = false
     }
   },
   // 向后台加载数据，所以需要actions函数获取数据
@@ -20,6 +30,10 @@ export default {
     async getList ({ commit }) {
       // 获取分类数据
       const data = await findAllCategory()
+      // 给每个分类加上控制二级分类显示隐藏的数据
+      data.result.forEach(top => {
+        top.open = false
+      })
       // 修改分类数据
       commit('setList', data.result)
     }
