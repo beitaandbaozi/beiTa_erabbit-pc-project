@@ -1,5 +1,9 @@
 <template>
-  <div class='xtx-carousel'>
+  <div
+    class='xtx-carousel'
+    @mouseenter="stop"
+    @mouseleave="start"
+  >
     <!-- 轮播图图片容器 -->
     <ul class="carousel-body">
       <li
@@ -20,11 +24,13 @@
     <a
       href="javascript:;"
       class="carousel-btn prev"
+      @click="toggle(-1)"
     ><i class="iconfont icon-angle-left"></i></a>
     <!-- 下一张 -->
     <a
       href="javascript:;"
       class="carousel-btn next"
+      @click="toggle(1)"
     ><i class="iconfont icon-angle-right"></i></a>
     <!-- 指示器 -->
     <div class="carousel-indicator">
@@ -32,13 +38,14 @@
         v-for="(item, i) in sliders"
         :key="i"
         :class="{active:index === i}"
+        @click="index = i"
       ></span>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
+import { onUnmounted, ref, watch } from "vue";
 export default {
   name: "XtxCarousel",
   props: {
@@ -47,11 +54,86 @@ export default {
       type: Array,
       default: () => [],
     },
+    // 是否自动轮播
+    autoPlay: {
+      type: Boolean,
+      default: false,
+    },
+    // 间隔时长
+    duration: {
+      type: Number,
+      default: 3000,
+    },
   },
-  setup () {
+  setup (props) {
     // 控制显示图片的索引
     const index = ref(0);
-    return { index };
+
+    // 1.自动轮播逻辑（定时器控制索引值即可）
+    let timer = null;
+    const autoPlayFn = () => {
+      // 防止定时器重复添加
+      clearInterval(timer);
+      timer = setInterval(() => {
+        index.value++;
+        // 循环播放的条件
+        if (index.value >= props.sliders.length) {
+          index.value = 0;
+        }
+      }, props.duration);
+    };
+    // 自动播放的条件： 监听slider数据，判断如果有数据且autoPlay是true
+    watch(
+      () => props.sliders,
+      (newVal) => {
+        if (newVal.length && props.autoPlay) {
+          autoPlayFn();
+        }
+      },
+      { immediate: true }
+    );
+
+    // 2.鼠标进入-暂停  离开-开启自动播放
+    const stop = () => {
+      if (timer) clearInterval(timer);
+    };
+    const start = () => {
+      if (props.sliders.length && props.autoPlay) {
+        autoPlayFn();
+      }
+    };
+
+    // 3.点击圆点切换轮播图（设置对应圆点的index值）
+    // 4.点击切换轮播图
+    const toggle = (value) => {
+      // index.value = index.value + value;
+      // if (index.value >= props.sliders.length) {
+      //   index.value = 0;
+      // } else if (index.value < 0) {
+      //   index.value = props.sliders.length - 1;
+      // }
+
+      // 将要改变的索引
+      const newIndex = index.value + value;
+      // 超出范围 ----太大
+      if (newIndex > props.sliders.length - 1) {
+        index.value = 0;
+        return;
+      }
+      // 超出范围 ----太小
+      if (newIndex < 0) {
+        index.value = props.sliders.length - 1;
+        return;
+      }
+      // 正常情况
+      index.value += value;
+    };
+
+    // 5.组件卸载时，清除定时器
+    onUnmounted(() => {
+      clearInterval(timer);
+    });
+    return { index, stop, start, toggle };
   },
 };
 </script>
