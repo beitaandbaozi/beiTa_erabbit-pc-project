@@ -8,31 +8,41 @@
         <XtxMore></XtxMore>
       </template>
       <!-- 默认插槽 -->
-      <ul class="goods-list">
-        <li
-          v-for="item in goods"
-          :key="item.id"
+      <Transition name="fade">
+        <ul
+          class="goods-list"
+          v-if="goods.length"
         >
-          <RouterLink :to="`/product/${item.id}`">
-            <img
-              :src="item.picture"
-              alt=""
-            >
-            <p class="name ellipsis">{{item.name}}</p>
-            <p class="price">&yen;{{item.price}}</p>
-          </RouterLink>
-        </li>
-      </ul>
+          <li
+            v-for="item in goods"
+            :key="item.id"
+          >
+            <RouterLink :to="`/product/${item.id}`">
+              <img
+                :src="item.picture"
+                alt=""
+              >
+              <p class="name ellipsis">{{item.name}}</p>
+              <p class="price">&yen;{{item.price}}</p>
+            </RouterLink>
+          </li>
+        </ul>
+        <HomeSkeleton
+          bg="#f0f9f4"
+          v-else
+        ></HomeSkeleton>
+      </Transition>
     </HomePanel>
   </div>
 </template>
 <script>
 import HomePanel from "./home-panel.vue";
+import HomeSkeleton from "./home-skeleton.vue";
 import { ref } from "vue";
 import { findNew } from "@/api/home";
 export default {
   name: "HomeNew",
-  components: { HomePanel },
+  components: { HomePanel, HomeSkeleton },
   setup () {
     const goods = ref([]);
     findNew().then((data) => {

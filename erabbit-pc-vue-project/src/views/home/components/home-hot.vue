@@ -5,23 +5,27 @@
       sub-title="人气爆款 不容错过"
     >
       <!-- 具名插槽 -->
-      <ul
-        class="goods-list"
-      >
-        <li
-          v-for="item in list"
-          :key="item.id"
+      <Transition name="fade">
+        <ul
+          class="goods-list"
+          v-if="list.length"
         >
-          <RouterLink to="/">
-            <img
-              :src="item.picture"
-              alt=""
-            >
-            <p class="name">{{item.title}}</p>
-            <p class="desc">{{item.alt}}</p>
-          </RouterLink>
-        </li>
-      </ul>
+          <li
+            v-for="item in list"
+            :key="item.id"
+          >
+            <RouterLink to="/">
+              <img
+                :src="item.picture"
+                alt=""
+              >
+              <p class="name">{{item.title}}</p>
+              <p class="desc">{{item.alt}}</p>
+            </RouterLink>
+          </li>
+        </ul>
+        <HomeSkeleton v-else></HomeSkeleton>
+      </Transition>
     </HomePanel>
   </div>
 </template>
@@ -29,9 +33,10 @@
 import HomePanel from "./home-panel.vue";
 import { ref } from "vue";
 import { findHot } from "@/api/home";
+import HomeSkeleton from "./home-skeleton.vue";
 export default {
   name: "HomeHot",
-  components: { HomePanel },
+  components: { HomePanel, HomeSkeleton },
   setup () {
     const list = ref([]);
     findHot().then((data) => {
