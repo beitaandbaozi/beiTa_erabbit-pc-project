@@ -2,10 +2,15 @@
   <div class='xtx-carousel'>
     <!-- 轮播图图片容器 -->
     <ul class="carousel-body">
-      <li class="carousel-item fade">
+      <li
+        class="carousel-item"
+        v-for="(item, i) in sliders"
+        :key="i"
+        :class="{fade:index === i}"
+      >
         <RouterLink to="/">
           <img
-            src="http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/1ba86bcc-ae71-42a3-bc3e-37b662f7f07e.jpg"
+            :src="item.imgUrl"
             alt=""
           >
         </RouterLink>
@@ -24,16 +29,30 @@
     <!-- 指示器 -->
     <div class="carousel-indicator">
       <span
-        v-for="i in 5"
+        v-for="(item, i) in sliders"
         :key="i"
+        :class="{active:index === i}"
       ></span>
     </div>
   </div>
 </template>
 
 <script>
+import { ref } from "vue";
 export default {
   name: "XtxCarousel",
+  props: {
+    // 轮播图数据（从父组件接收）
+    sliders: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  setup () {
+    // 控制显示图片的索引
+    const index = ref(0);
+    return { index };
+  },
 };
 </script>
 <style scoped lang="less">
