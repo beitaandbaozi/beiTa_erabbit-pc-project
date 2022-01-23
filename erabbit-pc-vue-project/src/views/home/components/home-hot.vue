@@ -4,28 +4,33 @@
       title="人气推荐"
       sub-title="人气爆款 不容错过"
     >
-      <!-- 具名插槽 -->
-      <Transition name="fade">
-        <ul
-          class="goods-list"
-          v-if="list.length"
-        >
-          <li
-            v-for="item in list"
-            :key="item.id"
+      <div
+        ref="target"
+        style="position: relative; height: 426px;"
+      >
+        <!-- 具名插槽 -->
+        <Transition name="fade">
+          <ul
+            class="goods-list"
+            v-if="list.length"
           >
-            <RouterLink to="/">
-              <img
-                :src="item.picture"
-                alt=""
-              >
-              <p class="name">{{item.title}}</p>
-              <p class="desc">{{item.alt}}</p>
-            </RouterLink>
-          </li>
-        </ul>
-        <HomeSkeleton v-else></HomeSkeleton>
-      </Transition>
+            <li
+              v-for="item in list"
+              :key="item.id"
+            >
+              <RouterLink to="/">
+                <img
+                  :src="item.picture"
+                  alt=""
+                >
+                <p class="name">{{item.title}}</p>
+                <p class="desc">{{item.alt}}</p>
+              </RouterLink>
+            </li>
+          </ul>
+          <HomeSkeleton v-else></HomeSkeleton>
+        </Transition>
+      </div>
     </HomePanel>
   </div>
 </template>
@@ -34,15 +39,18 @@ import HomePanel from "./home-panel.vue";
 import { ref } from "vue";
 import { findHot } from "@/api/home";
 import HomeSkeleton from "./home-skeleton.vue";
+import { useLazyData } from "@/hooks";
 export default {
   name: "HomeHot",
   components: { HomePanel, HomeSkeleton },
   setup () {
-    const list = ref([]);
-    findHot().then((data) => {
-      list.value = data.result;
-    });
-    return { list };
+    // const list = ref([]);
+    // findHot().then((data) => {
+    //   list.value = data.result;
+    // });
+    const target = ref(null);
+    const result = useLazyData(target, findHot);
+    return { list: result, target };
   },
 };
 </script>

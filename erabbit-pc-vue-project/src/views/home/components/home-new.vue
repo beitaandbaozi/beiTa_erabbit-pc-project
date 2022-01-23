@@ -8,30 +8,35 @@
         <XtxMore></XtxMore>
       </template>
       <!-- 默认插槽 -->
-      <Transition name="fade">
-        <ul
-          class="goods-list"
-          v-if="goods.length"
-        >
-          <li
-            v-for="item in goods"
-            :key="item.id"
+      <div
+        ref="target"
+        style="position: relative; height: 426px;"
+      >
+        <Transition name="fade">
+          <ul
+            class="goods-list"
+            v-if="goods.length"
           >
-            <RouterLink :to="`/product/${item.id}`">
-              <img
-                :src="item.picture"
-                alt=""
-              >
-              <p class="name ellipsis">{{item.name}}</p>
-              <p class="price">&yen;{{item.price}}</p>
-            </RouterLink>
-          </li>
-        </ul>
-        <HomeSkeleton
-          bg="#f0f9f4"
-          v-else
-        ></HomeSkeleton>
-      </Transition>
+            <li
+              v-for="item in goods"
+              :key="item.id"
+            >
+              <RouterLink :to="`/product/${item.id}`">
+                <img
+                  :src="item.picture"
+                  alt=""
+                >
+                <p class="name ellipsis">{{item.name}}</p>
+                <p class="price">&yen;{{item.price}}</p>
+              </RouterLink>
+            </li>
+          </ul>
+          <HomeSkeleton
+            bg="#f0f9f4"
+            v-else
+          ></HomeSkeleton>
+        </Transition>
+      </div>
     </HomePanel>
   </div>
 </template>
@@ -40,15 +45,19 @@ import HomePanel from "./home-panel.vue";
 import HomeSkeleton from "./home-skeleton.vue";
 import { ref } from "vue";
 import { findNew } from "@/api/home";
+import { useLazyData } from "@/hooks";
 export default {
   name: "HomeNew",
   components: { HomePanel, HomeSkeleton },
   setup () {
-    const goods = ref([]);
-    findNew().then((data) => {
-      goods.value = data.result;
-    });
-    return { goods };
+    // const goods = ref([]);
+    // findNew().then((data) => {
+    //   goods.value = data.result;
+    // });
+    const target = ref(null);
+    const result = useLazyData(target, findNew);
+
+    return { goods: result, target };
   },
 };
 </script>
