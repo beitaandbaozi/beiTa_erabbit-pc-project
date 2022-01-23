@@ -24,8 +24,8 @@
           :to="`/category/${cate.id}`"
         >
           <img
-            :src="cate.picture"
             alt=""
+            v-lazy="cate.picture"
           >
           <strong class="label">
             <span>{{cate.name}}</span>
@@ -37,7 +37,7 @@
             v-for="item in cate.goods"
             :key="item.id"
           >
-            <HomeGoods :goods="item"/>
+            <HomeGoods :goods="item" />
           </li>
         </ul>
       </div>
