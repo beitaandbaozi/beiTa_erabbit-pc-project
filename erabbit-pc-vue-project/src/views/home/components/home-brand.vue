@@ -21,22 +21,40 @@
       class="box"
       ref="box"
     >
-      <ul
-        class="list"
-        :style="{transform:`translateX(${-index*1240}px)`}"
-      >
-        <li
-          v-for="item in brands"
-          :key="item.id"
+      <Transition name="fade">
+        <ul
+          class="list"
+          :style="{transform:`translateX(${-index*1240}px)`}"
+          v-if="brands.length"
         >
-          <RouterLink to="/">
-            <img
-              :src="item.picture"
-              alt=""
-            >
-          </RouterLink>
-        </li>
-      </ul>
+          <li
+            v-for="item in brands"
+            :key="item.id"
+          >
+            <RouterLink to="/">
+              <img
+                :src="item.picture"
+                alt=""
+              >
+            </RouterLink>
+          </li>
+        </ul>
+        <!-- 骨架效果 -->
+        <div
+          v-else
+          class="skeleton"
+        >
+          <XtxSkeleton
+            class="item"
+            v-for="i in 5"
+            :key="i"
+            animated
+            bg="#e4e4e4"
+            width="240px"
+            height="305px"
+          />
+        </div>
+      </Transition>
     </div>
   </HomePanel>
 </template>
@@ -72,6 +90,16 @@ export default {
 </script>
 
 <style scoped lang='less'>
+.skeleton {
+  width: 100%;
+  display: flex;
+  .item {
+    margin-right: 10px;
+    &:nth-child(5n) {
+      margin-right: 0;
+    }
+  }
+}
 .home-panel {
   background: #f5f5f5;
 }
