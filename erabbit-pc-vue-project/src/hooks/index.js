@@ -25,6 +25,10 @@ export const useLazyData = (apiFn) => {
         })
       }
     },
+    // 配置选项，相交的面积比例大于0就触发
+    {
+      threshold: 0
+    }
   )
   return { result, target }
 }
