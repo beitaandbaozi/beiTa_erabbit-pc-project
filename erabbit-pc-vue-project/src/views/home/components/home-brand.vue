@@ -19,7 +19,7 @@
     </template>
     <div
       class="box"
-      ref="box"
+      ref="target"
     >
       <Transition name="fade">
         <ul
@@ -63,17 +63,15 @@
 import HomePanel from "./home-panel";
 import { ref } from "vue";
 import { findBrand } from "@/api/home";
-// import { useLazyData } from "@/hooks";
+import { useLazyData } from "@/hooks";
 export default {
   name: "HomeBrand",
   components: { HomePanel },
   setup () {
-    const brands = ref([]);
     // 获取数据
-    findBrand(10).then((data) => {
-      brands.value = data.result;
-    });
-    // const { target, result } = useLazyData(findBrand(10));
+    // 注意：useLazyData需要的是API函数，如果遇到要传参的情况，自己写个函数然后调用API
+    // 函数名() ====> 得到是return结果   函数 ====> 调用函数
+    const { target, result } = useLazyData(() => findBrand(10));
     // 切换效果
     // 1.点击上一页
     // 2.点击下一页
@@ -84,7 +82,7 @@ export default {
       index.value = newIndex;
     };
 
-    return { brands, toggle, index };
+    return { brands: result, toggle, index, target };
   },
 };
 </script>
