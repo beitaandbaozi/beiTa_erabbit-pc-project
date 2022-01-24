@@ -8,9 +8,11 @@
       <div class="head">品牌：</div>
       <div class="body">
         <a
+          :class="{active:item.id === filterData.brands.selectedBrand}"
           href="javascript:;"
           v-for="item in filterData.brands"
           :key="item.id"
+          @click="filterData.brands.selectedBrand = item.id"
         >{{item.name}}</a>
       </div>
     </div>
@@ -22,9 +24,11 @@
       <div class="head">{{item.name}}</div>
       <div class="body">
         <a
+          :class="{active:prop.id === item.selectedAttr}"
           href="javascript:;"
           v-for="prop in item.properties"
           :key="prop.id"
+          @click="item.selectedAttr=prop.id"
         >{{prop.name}}</a>
       </div>
     </div>
@@ -81,10 +85,13 @@ export default {
           // 获取数据
           findSubCategoryFilter(route.params.id).then((data) => {
             // 每一组可选的筛选条件缺失 全部 条件，处理下数据加上全部
+            // 给每一组数据加上一个选中的ID
             // 1.品牌
+            data.result.brands.selectedBrand = null;
             data.result.brands.unshift({ id: null, name: "全部" });
             // 2.属性
             data.result.saleProperties.forEach((item) => {
+              item.selectedAttr = null;
               item.properties.unshift({ id: null, name: "全部" });
             });
             filterData.value = data.result;
