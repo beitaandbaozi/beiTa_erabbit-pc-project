@@ -24,7 +24,7 @@
           >
             <a href="javascript:;">
               <img :src="sub.picture">
-              <p>{{sub.name}}}</p>
+              <p>{{sub.name}}</p>
             </a>
           </li>
         </ul>
