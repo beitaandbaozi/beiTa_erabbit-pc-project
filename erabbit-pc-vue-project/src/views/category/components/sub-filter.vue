@@ -1,6 +1,9 @@
 <template>
   <!-- 筛选区 -->
-  <div class="sub-filter" v-if="filterData">
+  <div
+    class="sub-filter"
+    v-if="filterData &&  !filterLoading"
+  >
     <div class="item">
       <div class="head">品牌：</div>
       <div class="body">
@@ -26,6 +29,37 @@
       </div>
     </div>
   </div>
+  <!-- 骨架结构 -->
+  <div
+    v-else
+    class="sub-filter"
+  >
+    <XtxSkeleton
+      class="item"
+      width="800px"
+      height="40px"
+    />
+    <XtxSkeleton
+      class="item"
+      width="800px"
+      height="40px"
+    />
+    <XtxSkeleton
+      class="item"
+      width="600px"
+      height="40px"
+    />
+    <XtxSkeleton
+      class="item"
+      width="600px"
+      height="40px"
+    />
+    <XtxSkeleton
+      class="item"
+      width="600px"
+      height="40px"
+    />
+  </div>
 </template>
 <script>
 import { ref, watch } from "vue";
@@ -37,11 +71,13 @@ export default {
     const route = useRoute();
     // 监听二级类目ID的变化获取筛选数据
     const filterData = ref(null);
+    const filterLoading = ref(false);
     watch(
       () => route.params.id,
       (newVal) => {
         // 变化后的ID有值，且处于二级类名路由
         if (newVal && `/category/sub/${newVal}` === route.path) {
+          filterLoading.value = true;
           // 获取数据
           findSubCategoryFilter(route.params.id).then((data) => {
             // 每一组可选的筛选条件缺失 全部 条件，处理下数据加上全部
@@ -52,6 +88,7 @@ export default {
               item.properties.unshift({ id: null, name: "全部" });
             });
             filterData.value = data.result;
+            filterLoading.value = false;
           });
         }
       },
@@ -59,7 +96,7 @@ export default {
         immediate: true,
       }
     );
-    return { filterData };
+    return { filterData, filterLoading };
   },
 };
 </script>
@@ -88,5 +125,8 @@ export default {
       }
     }
   }
+}
+.xtx-skeleton {
+  padding: 10px 0;
 }
 </style>
