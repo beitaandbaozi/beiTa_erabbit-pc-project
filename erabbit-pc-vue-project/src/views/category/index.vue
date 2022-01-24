@@ -27,16 +27,21 @@
         </ul>
       </div>
       <!-- 各个分类推荐商品 -->
-      <div class="ref-goods">
+      <div
+        class="ref-goods"
+        v-for="sub in subList"
+        :key="sub.id"
+      >
         <div class="head">
-          <h3>- 海鲜 -</h3>
+          <h3>- {{sub.name}} -</h3>
           <p class="tag">温暖柔软，品质之选</p>
-          <XtxMore />
+          <XtxMore :path="`/category/sub/${sub.id}`" />
         </div>
         <div class="body">
           <GoodsItem
-            v-for="i in 5"
-            :key="i"
+            v-for="goods in sub.goods"
+            :key="goods.id"
+            :goods="goods"
           />
         </div>
       </div>
@@ -45,11 +50,12 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { findBanner } from "@/api/home";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 import GoodsItem from "./components/goods-item";
+import { findTopCategory } from "@/api/category";
 export default {
   name: "TopCategory",
   components: {
@@ -73,8 +79,26 @@ export default {
       if (item) cate = item;
       return cate;
     });
+    // 获取各个子类目下推荐商品
+    const subList = ref([]);
+    const getSubList = () => {
+      findTopCategory(router.params.id).then((data) => {
+        subList.value = data.result.children;
+      });
+    };
+    // 定义API，组件初始化要去加载数据，但是动态路由不会重新初始化组件。
+    // 如果监听地址栏id的变化，然后变化了就去加载数据，但是初始化有不会加载了。
+    // 不过watch提供了 immediate: true 可让watch初始化的时候主动触发一次。
+    // 监听地址栏是否变化
+    watch(
+      () => router.params.id,
+      (newVal) => {
+        newVal && getSubList();
+      },
+      { immediate: true }
+    );
 
-    return { sliders, topCategory };
+    return { sliders, topCategory, subList };
   },
 };
 </script>
