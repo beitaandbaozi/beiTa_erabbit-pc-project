@@ -54,9 +54,9 @@ export default {
 .app-header-nav {
   width: 820px;
   display: flex;
-  justify-content: space-around;
   padding-left: 40px;
   position: relative;
+  z-index: 998;
   > li {
     margin-right: 40px;
     width: 38px;
