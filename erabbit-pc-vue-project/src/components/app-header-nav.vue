@@ -3,9 +3,11 @@
     <li class="home">
       <RouterLink to="/">首页</RouterLink>
     </li>
-    <li v-for="item in list" :key="item.id" @mouseenter="show(item.id)" @mouseleave="hide(item.id)">
+    <!-- 一级导航 -->
+    <li v-for="item in list" :key="item.id" @mousemove="show(item.id)" @mouseleave="hide(item.id)">
       <RouterLink :to="`/category/${item.id}`" @click="hide(item.id)">{{item.name}}</RouterLink>
       <div class="layer" :class="{open:item.open}">
+        <!-- 二级导航 -->
         <ul>
           <li
             v-for="sub in item.children"
