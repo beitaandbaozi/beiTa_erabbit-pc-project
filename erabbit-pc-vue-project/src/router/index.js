@@ -25,6 +25,8 @@ const router = createRouter({
   routes,
   // 每次切换路由的时候切换到页面的顶端
   scrollBehavior () {
+    // vue2.0 x y 控制
+    // vue3.0 left top 控制
     return { left: 0, top: 0 }
   }
 })

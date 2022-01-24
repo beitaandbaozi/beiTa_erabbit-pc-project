@@ -4,7 +4,10 @@
       <!-- 面包屑 -->
       <XtxBread>
         <XtxBreadItem to="/">首页</XtxBreadItem>
-        <Transition name="fade-right" mode="out-in">
+        <Transition
+          name="fade-right"
+          mode="out-in"
+        >
           <!-- 加上key的原因是让结点重新创建===> 这样是为了实现动画切换的原因 -->
           <XtxBreadItem :key="topCategory.id">{{topCategory.name}}</XtxBreadItem>
         </Transition>
@@ -96,7 +99,11 @@ export default {
     watch(
       () => router.params.id,
       (newVal) => {
-        newVal && getSubList();
+        // newVal && getSubList();
+        // 在顶级类名下才发请求
+        if (newVal && `/category/${newVal}` === router.path) {
+          getSubList();
+        }
       },
       { immediate: true }
     );
