@@ -18,7 +18,7 @@
   </div>
 </template>
 <script>
-import { ref, watch } from "vue";
+import { useVModel } from "@vueuse/core";
 // v-model ====> :modelValue + @update:modelValue
 export default {
   name: "XtxCheckbox",
@@ -30,21 +30,19 @@ export default {
     },
   },
   setup (props, { emit }) {
-    const checked = ref(false);
-    // 改变选项状态
+    // 使用 useVModel 实现双向数据绑定
+    // 1.使用props接收modelValue
+    // 2.使用useVModel来包装props中的modelValue属性数据
+    // 3.在使用checked.value就是使用父组件数据
+    // 4.在使用checked.value = '数据'赋值，触发emit('update:modelValue','数据')
+    const checked = useVModel(props, "modelValue", emit);
     const changeChecked = () => {
-      checked.value = !checked.value;
-      // 使用emit通知父组件数据的改变
-      emit("update:modelValue", checked.value);
+      const newVal = !checked.value;
+      // 通知父组件
+      checked.value = newVal;
+      // 让组件支持change事件
+      emit('change',newVal)
     };
-    // 使用监听器，将父组件传递过来的数据赋值给checked数据
-    watch(
-      () => props.modelValue,
-      () => {
-        checked.value = props.modelValue;
-      },
-      { immediate: true }
-    );
     return { checked, changeChecked };
   },
 };
