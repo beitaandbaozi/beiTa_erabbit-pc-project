@@ -1,25 +1,25 @@
 <template>
-  <div class='xtx-goods-page' v-if="goods">
+  <div
+    class='xtx-goods-page'
+    v-if="goods"
+  >
     <div class="container">
       <!-- 面包屑 -->
       <XtxBread>
         <XtxBreadItem to="/">首页</XtxBreadItem>
-        <XtxBreadItem
-          :to="`/category/${goods.categories[1].id}`"
-        >{{goods.categories[1].name}}</XtxBreadItem>
-        <XtxBreadItem
-          :to="`/category/sub/${goods.categories[0].id}`"
-        >{{goods.categories[0].name}}</XtxBreadItem>
-        <XtxBreadItem
-          to="/"
-        >{{goods.name}}</XtxBreadItem>
+        <XtxBreadItem :to="`/category/${goods.categories[1].id}`">{{goods.categories[1].name}}</XtxBreadItem>
+        <XtxBreadItem :to="`/category/sub/${goods.categories[0].id}`">{{goods.categories[0].name}}</XtxBreadItem>
+        <XtxBreadItem to="/">{{goods.name}}</XtxBreadItem>
       </XtxBread>
       <!-- 商品信息 -->
       <div class="goods-info">
         <div class="media">
           <GoodsImage :images="goods.mainPictures"></GoodsImage>
+          <GoodsSales></GoodsSales>
         </div>
-        <div class="spec"></div>
+        <div class="spec">
+          <GoodsName :goods="goods"></GoodsName>
+        </div>
       </div>
       <!-- 商品推荐 -->
       <GoodsRelevant />
@@ -44,9 +44,11 @@ import { findGoods } from "@/api/product";
 import { nextTick, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import GoodsImage from "./components/goods-image";
+import GoodsSales from "./components/goods-sales";
+import GoodsName from "./components/goods-name";
 export default {
   name: "XtxGoodsPage",
-  components: { GoodsRelevant, GoodsImage },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName },
   setup () {
     // 1.获取商品详情，进行渲染
     const goods = useGoods();
@@ -82,6 +84,7 @@ const useGoods = () => {
 .goods-info {
   min-height: 600px;
   background: #fff;
+  display: flex;
   .media {
     width: 580px;
     height: 600px;
@@ -104,13 +107,13 @@ const useGoods = () => {
     min-height: 1000px;
   }
 }
-.goods-tabs {
-  min-height: 600px;
-  background: #fff;
-}
-.goods-warn {
-  min-height: 600px;
-  background: #fff;
-  margin-top: 20px;
-}
+// .goods-tabs {
+//   min-height: 600px;
+//   background: #fff;
+// }
+// .goods-warn {
+//   min-height: 600px;
+//   background: #fff;
+//   margin-top: 20px;
+// }
 </style>
