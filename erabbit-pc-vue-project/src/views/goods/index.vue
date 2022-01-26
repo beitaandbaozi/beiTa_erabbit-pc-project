@@ -4,9 +4,18 @@
       <!-- 面包屑 -->
       <XtxBread>
         <XtxBreadItem to="/">首页</XtxBreadItem>
-        <XtxBreadItem to="/">手机</XtxBreadItem>
-        <XtxBreadItem to="/">华为</XtxBreadItem>
-        <XtxBreadItem to="/">p30</XtxBreadItem>
+        <XtxBreadItem
+          v-if="goods"
+          :to="`/category/${goods.categories[1].id}`"
+        >{{goods.categories[1].name}}</XtxBreadItem>
+        <XtxBreadItem
+          v-if="goods"
+          :to="`/category/sub/${goods.categories[0].id}`"
+        >{{goods.categories[0].name}}</XtxBreadItem>
+        <XtxBreadItem
+          v-if="goods"
+          to="/"
+        >{{goods.name}}</XtxBreadItem>
       </XtxBread>
       <!-- 商品信息 -->
       <div class="goods-info"></div>
@@ -29,9 +38,40 @@
 
 <script>
 import GoodsRelevant from "./components/goods-relevant";
+import { findGoods } from "@/api/product";
+import { nextTick, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 export default {
   name: "XtxGoodsPage",
   components: { GoodsRelevant },
+  setup () {
+    // 1.获取商品详情，进行渲染
+    const goods = useGoods();
+    return { goods };
+  },
+};
+// 获取商品详情
+const useGoods = () => {
+  // 出现路由地址商品ID发生变化，但是不会重新初始化组件
+  const goods = ref(null);
+  const route = useRoute();
+  watch(
+    () => route.params.id,
+    (newVal) => {
+      if (newVal && `/product/${newVal}` === route.path) {
+        findGoods(route.params.id).then((data) => {
+          // 让商品数据为Null让后面使用v-if的组件可以重新销毁和创建，不要考虑监听
+          goods.value = null;
+          // 让上面的数据生效
+          nextTick(() => {
+            goods.value = data.result;
+          });
+        });
+      }
+    },
+    { immediate: true }
+  );
+  return goods;
 };
 </script>
 
