@@ -1,19 +1,16 @@
 <template>
-  <div class='xtx-goods-page'>
+  <div class='xtx-goods-page' v-if="goods">
     <div class="container">
       <!-- 面包屑 -->
       <XtxBread>
         <XtxBreadItem to="/">首页</XtxBreadItem>
         <XtxBreadItem
-          v-if="goods"
           :to="`/category/${goods.categories[1].id}`"
         >{{goods.categories[1].name}}</XtxBreadItem>
         <XtxBreadItem
-          v-if="goods"
           :to="`/category/sub/${goods.categories[0].id}`"
         >{{goods.categories[0].name}}</XtxBreadItem>
         <XtxBreadItem
-          v-if="goods"
           to="/"
         >{{goods.name}}</XtxBreadItem>
       </XtxBread>
