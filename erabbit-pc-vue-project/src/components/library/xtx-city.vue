@@ -16,25 +16,42 @@
       class="option"
       v-if="visible"
     >
-      <span
-        class="ellipsis"
-        v-for="i in 24"
-        :key="i"
-      >北京市</span>
+      <div
+        v-if="loading"
+        class="loading"
+      ></div>
+      <template v-else>
+        <span
+          class="ellipsis"
+          v-for="item in currList"
+          :key="item.code"
+        >{{item.name}}</span>
+      </template>
     </div>
   </div>
 </template>
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { onClickOutside } from "@vueuse/core";
+import axios from "axios";
 export default {
   name: "XtxCity",
   setup () {
     // 显示和隐藏数据
     const visible = ref(false);
+    // 城市数据
+    const allCityData = ref([]);
+    // 数据加载状态
+    const loading = ref(false);
     // 提供打开和关闭的行为方法
     const open = () => {
       visible.value = true;
+      // 获取城市数据
+      loading.value = true;
+      getCityData().then((data) => {
+        allCityData.value = data;
+        loading.value = false;
+      });
     };
     const close = () => {
       visible.value = false;
@@ -52,8 +69,38 @@ export default {
       close();
     });
 
-    return { visible, toggle, target };
+    // 实现计算属性： 获取当前显示的地区数组
+    const currList = computed(() => {
+      // 默认显示省一级
+      const list = allCityData.value;
+      // 可能：市一级
+      // 可能：县地区一级
+      return list;
+    });
+    return { visible, toggle, target, loading, currList };
   },
+};
+// 获取省市区数据函数
+const getCityData = () => {
+  // 获取城市数据
+  // 1. 数据在哪里？https://yjy-oss-files.oss-cn-zhangjiakou.aliyuncs.com/tuxian/area.json
+  // 2. 当本地没有缓存，发请求获取数据
+  // 3. 当本地有缓存，取出本地数据
+  // 返回promise在then获取数据，这里可能是异步操作可能同步操作
+  return new Promise((resolve, reject) => {
+    // 约定：数据存储在window上的cityData字段
+    if (window.cityData) {
+      resolve(window.cityData);
+    } else {
+      const url =
+        "https://yjy-oss-files.oss-cn-zhangjiakou.aliyuncs.com/tuxian/area.json";
+      axios.get(url).then((res) => {
+        // 进行缓存
+        window.cityData = res.data;
+        resolve(res.data);
+      });
+    }
+  });
 };
 </script>
 <style scoped lang="less">
@@ -103,6 +150,11 @@ export default {
       &:hover {
         background: #f5f5f5;
       }
+    }
+    .loading {
+      height: 290px;
+      width: 100%;
+      background: url(../../assets/images/loading.gif) no-repeat center;
     }
   }
 }
