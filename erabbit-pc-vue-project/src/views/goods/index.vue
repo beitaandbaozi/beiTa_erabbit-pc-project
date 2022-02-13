@@ -21,7 +21,7 @@
           <!-- 名字区组件 -->
           <GoodsName :goods="goods"></GoodsName>
           <!-- 规格组件 -->
-          <GoodsSku></GoodsSku>
+          <GoodsSku :goods="goods"></GoodsSku>
         </div>
       </div>
       <!-- 商品推荐 -->
