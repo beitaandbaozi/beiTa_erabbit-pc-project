@@ -18,7 +18,10 @@
           <GoodsSales></GoodsSales>
         </div>
         <div class="spec">
+          <!-- 名字区组件 -->
           <GoodsName :goods="goods"></GoodsName>
+          <!-- 规格组件 -->
+          <GoodsSku></GoodsSku>
         </div>
       </div>
       <!-- 商品推荐 -->
@@ -46,9 +49,10 @@ import { useRoute } from "vue-router";
 import GoodsImage from "./components/goods-image";
 import GoodsSales from "./components/goods-sales";
 import GoodsName from "./components/goods-name";
+import GoodsSku from "./components/goods-sku";
 export default {
   name: "XtxGoodsPage",
-  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku },
   setup () {
     // 1.获取商品详情，进行渲染
     const goods = useGoods();
