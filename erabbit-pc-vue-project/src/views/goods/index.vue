@@ -23,11 +23,19 @@
           <!-- 规格组件 -->
           <GoodsSku
             :goods="goods"
-            skuId="300028242"
             @change="changeSku"
           ></GoodsSku>
+          <!-- 数量选择组件 -->
+          <XtxNumbox
+            v-model="count"
+            label="数量"
+            :max="goods.inventory"
+          ></XtxNumbox>
           <!-- 按钮组件 -->
-          <XtxButton type="plain" style="margin-top:20px;">加入购物车</XtxButton>
+          <XtxButton
+            type="plain"
+            style="margin-top:20px;"
+          >加入购物车</XtxButton>
         </div>
       </div>
       <!-- 商品推荐 -->
@@ -65,12 +73,13 @@ export default {
     const changeSku = (sku) => {
       // 修改商品现价、原价和库存信息
       if (sku.skuId) {
-        goods.value.price = sku.price
-        goods.value.oldPrice = sku.oldPrice
-        goods.value.inventory = sku.inventory
+        goods.value.price = sku.price;
+        goods.value.oldPrice = sku.oldPrice;
+        goods.value.inventory = sku.inventory;
       }
     };
-    return { goods, changeSku };
+    const count = ref(1);
+    return { goods, changeSku, count };
   },
 };
 // 获取商品详情
