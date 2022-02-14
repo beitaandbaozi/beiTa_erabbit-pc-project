@@ -26,6 +26,8 @@
             skuId="300028242"
             @change="changeSku"
           ></GoodsSku>
+          <!-- 按钮组件 -->
+          <XtxButton type="plain" style="margin-top:20px;">加入购物车</XtxButton>
         </div>
       </div>
       <!-- 商品推荐 -->
