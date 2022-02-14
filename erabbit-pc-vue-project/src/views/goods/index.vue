@@ -21,7 +21,11 @@
           <!-- 名字区组件 -->
           <GoodsName :goods="goods"></GoodsName>
           <!-- 规格组件 -->
-          <GoodsSku :goods="goods"></GoodsSku>
+          <GoodsSku
+            :goods="goods"
+            skuId="300028242"
+            @change="changeSku"
+          ></GoodsSku>
         </div>
       </div>
       <!-- 商品推荐 -->
@@ -56,7 +60,15 @@ export default {
   setup () {
     // 1.获取商品详情，进行渲染
     const goods = useGoods();
-    return { goods };
+    const changeSku = (sku) => {
+      // 修改商品现价、原价和库存信息
+      if (sku.skuId) {
+        goods.value.price = sku.price
+        goods.value.oldPrice = sku.oldPrice
+        goods.value.inventory = sku.inventory
+      }
+    };
+    return { goods, changeSku };
   },
 };
 // 获取商品详情
