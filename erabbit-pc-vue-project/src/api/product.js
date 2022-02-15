@@ -6,3 +6,10 @@ import request from "@/utils/request"
 export const findGoods = (id) => {
   return request('/goods', 'get', { id })
 }
+/**
+ * @param {String} id -商品ID 传入相关推荐，不传猜你喜欢
+ * @param {Integer} limit -商品数量
+ */
+export const findRelevantGoods = ({ id, limit = 16 }) => {
+  return request('/goods/relevant', 'get', { id, limit })
+}

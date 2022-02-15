@@ -33,7 +33,7 @@
           ></XtxNumbox>
           <!-- 按钮组件 -->
           <XtxButton
-            type="plain"
+            type="primary"
             style="margin-top:20px;"
           >加入购物车</XtxButton>
         </div>
