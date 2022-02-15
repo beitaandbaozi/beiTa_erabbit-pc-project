@@ -44,7 +44,7 @@
       <div class="goods-footer">
         <div class="goods-article">
           <!-- 商品+评价 -->
-          <div class="goods-tabs"></div>
+          <GoodsTabs></GoodsTabs>
           <!-- 注意事项 -->
           <div class="goods-warn"></div>
         </div>
@@ -64,9 +64,10 @@ import GoodsImage from "./components/goods-image";
 import GoodsSales from "./components/goods-sales";
 import GoodsName from "./components/goods-name";
 import GoodsSku from "./components/goods-sku";
+import GoodsTabs from "./components/goods-tabs";
 export default {
   name: "XtxGoodsPage",
-  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku, GoodsTabs },
   setup () {
     // 1.获取商品详情，进行渲染
     const goods = useGoods();
