@@ -39,7 +39,7 @@
         </div>
       </div>
       <!-- 商品推荐 -->
-      <GoodsRelevant />
+      <GoodsRelevant :goodsId='goods.id' />
       <!-- 商品详情 -->
       <div class="goods-footer">
         <div class="goods-article">
@@ -61,7 +61,7 @@
 <script>
 import GoodsRelevant from "./components/goods-relevant";
 import { findGoods } from "@/api/product";
-import { nextTick, ref, watch } from "vue";
+import { nextTick, ref, watch, provide } from "vue";
 import { useRoute } from "vue-router";
 import GoodsImage from "./components/goods-image";
 import GoodsSales from "./components/goods-sales";
@@ -92,6 +92,8 @@ export default {
       }
     };
     const count = ref(1);
+    // 提供goods数据给后代组件使用
+    provide("goods", goods);
     return { goods, changeSku, count };
   },
 };

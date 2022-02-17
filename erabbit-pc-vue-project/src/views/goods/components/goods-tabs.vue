@@ -10,7 +10,7 @@
         @click="activeName = 'GoodsComment'"
         :class="{active:activeName === 'GoodsComment'}"
         href="javascript:;"
-      >商品评价<span>(500+)</span></a>
+      >商品评价<span>({{goods.commentCount}})</span></a>
     </nav>
     <!-- 切换内容的地方 拆成组件-->
     <!-- 在vue中动态的去切换组件其实可以使用动态组件component组件-->
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import GoodsComment from "./goods-comment.vue";
 import GoodsDetail from "./goods-detail.vue";
 export default {
@@ -33,7 +33,9 @@ export default {
   setup () {
     // activeName的值：GoodsDetail、GoodsComment
     const activeName = ref("GoodsDetail");
-    return { activeName };
+    // goods详情数据
+    const goods = inject("goods");
+    return { activeName, goods };
   },
 };
 </script>
