@@ -21,3 +21,20 @@ export const findRelevantGoods = ({ id, limit = 16 }) => {
 export const findGoodsHot = ({ id, limit = 3, type = 1 }) => {
   return request('/goods/hot', 'get', { id, limit, type })
 }
+/**
+ * 查询商品评价信息
+ * @param {Integer} id -商品ID
+ */
+export const findGoodsCommentInfo = (id) => {
+  // axios 遇见 http https 不会加上基准地址
+  return request(`https://mock.boxuegu.com/mock/1175/goods/${id}/evaluate`, 'get')
+}
+/**
+ * 查询商品评价列表
+ * @param {Integer} id -商品ID
+ * @param {Object} params =筛选参数
+ */
+export const findGoodsCommentList = (id, params) => {
+  // axios 遇见 http https 不会加上基准地址
+  return request(`https://mock.boxuegu.com/mock/1175/goods/${id}/evaluate/page`, 'get', params)
+}
