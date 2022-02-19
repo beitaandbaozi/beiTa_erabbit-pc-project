@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <div class="sort">
+    <div class="sort" v-if="commentInfo">
       <span>排序：</span>
       <a
         href="javascript:;"
@@ -73,7 +73,10 @@
           </div>
           <div class="text">{{item.content}}</div>
           <!-- 评论图片组件 -->
-          <GoodsCommentImage v-if="item.pictures.length" :pictures="item.pictures"></GoodsCommentImage>
+          <GoodsCommentImage
+            v-if="item.pictures.length"
+            :pictures="item.pictures"
+          ></GoodsCommentImage>
           <div class="time">
             <span>{{item.createTime}}</span>
             <span class="zan"><i class="iconfont icon-dianzan"></i>{{item.praiseCount}}</span>
@@ -81,6 +84,8 @@
         </div>
       </div>
     </div>
+    <!-- 分页组件 -->
+    <XtxPagination v-if="total" @current-change="changePagerFn" :total="total" :page-size="reqParams.pageSize" :current-page="reqParams.page"></XtxPagination>
   </div>
 </template>
 
@@ -148,11 +153,13 @@ export default {
     });
     // 初始化需要发请求，筛选条件发生改变发请求
     const commentList = ref(null);
+    const total = ref(0);
     watch(
       reqParams,
       () => {
         findGoodsCommentList(route.params.id, reqParams).then((data) => {
           commentList.value = data.result.items;
+          total.value = data.result.counts;
           // console.log(data.result.items)
         });
       },
@@ -169,6 +176,10 @@ export default {
       return nickname.substr(0, 1) + "*****" + nickname.substr(-1);
     };
 
+    // 实现分页切换
+    const changePagerFn = (newPage) => {
+      reqParams.page = newPage
+    }
     return {
       commentInfo,
       currentTagIndex,
@@ -178,6 +189,8 @@ export default {
       commentList,
       formatSpecs,
       formatNickName,
+      total,
+      changePagerFn
     };
   },
 };
