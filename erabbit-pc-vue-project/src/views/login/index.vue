@@ -9,10 +9,9 @@
       </nav>
       <!-- 账号登录和扫码登录 -->
       <!-- 表单 -->
-      <div
+      <LoginForm
         v-if="activeName==='account'"
-        class="account-box"
-      >表单</div>
+      >表单</LoginForm>
       <!-- 二维码 -->
       <div
         v-if="activeName==='qrcode'"
@@ -31,10 +30,11 @@
 <script>
 import LoginHeader from "./components/login-header.vue";
 import LoginFooter from "./components/login-footer.vue";
+import LoginForm from "./components/login-form.vue";
 import { ref } from "vue";
 export default {
   name: "PageLogin",
-  components: { LoginHeader, LoginFooter },
+  components: { LoginHeader, LoginFooter, LoginForm },
   setup () {
     const activeName = ref("account");
     return { activeName };
