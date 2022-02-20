@@ -146,6 +146,7 @@
 import { ref, reactive, watch } from "vue";
 import { Form, Field } from "vee-validate";
 import schema from "@/utils/vee-validate-schema";
+import Message from "@/components/library/Message";
 export default {
   name: "LoginForm",
   components: { Form, Field },
@@ -176,7 +177,7 @@ export default {
     };
 
     // 监听isMsgLogin变化，重置表单（数据+清楚校验结果）
-    const formCom = ref(null)
+    const formCom = ref(null);
     watch(isMsgLogin, () => {
       // 重置数据
       form.isAgree = true;
@@ -186,15 +187,20 @@ export default {
       form.code = null;
       // 如果是没有销毁Field组件，之前的校验结果是不会清除  例如 v-show
       // Form组件提供了一个 resetForm 函数清除校验结果
-      formCom.value.resetForm()
+      formCom.value.resetForm();
     });
+    // setup拿到组件实例 proxy  ===> 解决vue2使用this
+    // proxy.$message({ type: "error", text: "用户名或密码错误" })
+    // const { proxy } = getCurrentInstance();
 
     // 点击登录的时候对整体表单校验
     const login = async () => {
       // Form组件提供了一个 validate 函数作为整体表单校验，返回一个promise
-      const valid = await formCom.value.validate()
-      console.log(valid)
-    }
+      const valid = await formCom.value.validate();
+      console.log(valid);
+      Message({ type: "error", text: "用户名或密码错误" });
+      // proxy.$message({ type: "error", text: "用户名或密码错误" })
+    };
 
     return { isMsgLogin, form, schema: mySchema, formCom, login };
   },

@@ -17,7 +17,7 @@
   </Transition>
 </template>
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 export default {
   name: "XtxMessage",
   props: {
