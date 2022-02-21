@@ -147,6 +147,9 @@ import { ref, reactive, watch } from "vue";
 import { Form, Field } from "vee-validate";
 import schema from "@/utils/vee-validate-schema";
 import Message from "@/components/library/Message";
+import { userAccountLogin } from "@/api/user";
+import { useStore } from "vuex";
+import { useRouter, useRoute } from "vue-router";
 export default {
   name: "LoginForm",
   components: { Form, Field },
@@ -194,11 +197,48 @@ export default {
     // const { proxy } = getCurrentInstance();
 
     // 点击登录的时候对整体表单校验
+    const store = useStore();
+    const router = useRouter();
+    const route = useRoute();
     const login = async () => {
       // Form组件提供了一个 validate 函数作为整体表单校验，返回一个promise
       const valid = await formCom.value.validate();
-      console.log(valid);
-      Message({ type: "error", text: "用户名或密码错误" });
+      // console.log(valid);
+      // 1.准备API做账号登录
+      // 2.调用API函数
+      // 3.成功：存储用户信息 + 跳转至来源页或者首页 + 消息提示
+      // 4.失败：消息提示
+      if (valid) {
+        const { account, password } = form;
+        userAccountLogin({ account, password })
+          .then((data) => {
+            const { id, account, avatar, mobile, nickname, token } =
+              data.result;
+            // 存储用户信息
+            store.commit("user/setUser", {
+              id,
+              account,
+              avatar,
+              mobile,
+              nickname,
+              token,
+            });
+            // 进行跳转
+            router.push(route.query.redirectUrl || "/");
+            // 消息提示
+            Message({ type: "success", text: "登录成功！" });
+          })
+          .catch((e) => {
+            // 失败提示
+            if (e.response.data) {
+              Message({
+                type: "error",
+                text: e.response.data.message || "登录失败！",
+              });
+            }
+          });
+      }
+      // Message({ type: "error", text: "用户名或密码错误" });
       // proxy.$message({ type: "error", text: "用户名或密码错误" })
     };
 
