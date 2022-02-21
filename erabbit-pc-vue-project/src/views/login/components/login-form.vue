@@ -146,11 +146,15 @@
   </div>
 </template>
 <script>
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, watch, onUnmounted } from "vue";
 import { Form, Field } from "vee-validate";
 import schema from "@/utils/vee-validate-schema";
 import Message from "@/components/library/Message";
-import { userAccountLogin, userMobileLoginMsg } from "@/api/user";
+import {
+  userAccountLogin,
+  userMobileLoginMsg,
+  userMobileLogin,
+} from "@/api/user";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { useIntervalFn } from "@vueuse/core";
@@ -209,56 +213,54 @@ export default {
       const valid = await formCom.value.validate();
       // console.log(valid);
       if (valid) {
-        if (isMsgLogin.value) {
-          /** 手机号登录 */
-          // 1.发送验证码
-          // 1.1 绑定发送验证码按钮点击事件
-          // 1.2 校验手机号，如果成功就发送短信（API），请求成功开始倒计时，不能再次点击
-          // 1.3 如果失败，失败得校验样式显示出来
-          // 2.手机号登录
-          // 2.1 准备API做账号登录
-          // 2.2 调用API函数
-          // 2.3 成功：存储用户信息 + 跳转至来源页或者首页 + 消息提示
-          // 2.4 失败：消息提示
-        } else {
-          /** 账号登录 */
-          // 1.准备API做账号登录
-          // 2.调用API函数
-          // 3.成功：存储用户信息 + 跳转至来源页或者首页 + 消息提示
-          // 4.失败：消息提示
-          const { account, password } = form;
-          userAccountLogin({ account, password })
-            .then((data) => {
-              const { id, account, avatar, mobile, nickname, token } =
-                data.result;
-              // 存储用户信息
-              store.commit("user/setUser", {
-                id,
-                account,
-                avatar,
-                mobile,
-                nickname,
-                token,
-              });
-              // 进行跳转
-              router.push(route.query.redirectUrl || "/");
-              // 消息提示
-              Message({ type: "success", text: "登录成功！" });
-            })
-            .catch((e) => {
-              // 失败提示
-              if (e.response.data) {
-                Message({
-                  type: "error",
-                  text: e.response.data.message || "登录失败！",
-                });
-              }
+        try {
+          let data = null;
+          if (isMsgLogin.value) {
+            /** 手机号登录 */
+            // 2.手机号登录
+            // 2.1 准备API做账号登录
+            // 2.2 调用API函数
+            // 2.3 成功：存储用户信息 + 跳转至来源页或者首页 + 消息提示
+            // 2.4 失败：消息提示
+            const { mobile, code } = form;
+            data = await userMobileLogin({ mobile, code });
+          } else {
+            /** 账号登录 */
+            // 1.准备API做账号登录
+            // 2.调用API函数
+            // 3.成功：存储用户信息 + 跳转至来源页或者首页 + 消息提示
+            // 4.失败：消息提示
+            const { account, password } = form;
+            data = await userAccountLogin({ account, password });
+          }
+          // 存储用户信息
+          const { id, account, avatar, mobile, nickname, token } = data.result;
+          store.commit("user/setUser", {
+            id,
+            account,
+            avatar,
+            mobile,
+            nickname,
+            token,
+          });
+          // 进行跳转
+          router.push(route.query.redirectUrl || "/");
+          // 消息提示
+          Message({ type: "success", text: "登录成功！" });
+        } catch (e) {
+          // 失败提示
+          if (e.response.data) {
+            Message({
+              type: "error",
+              text: e.response.data.message || "登陆失败！",
             });
+          }
         }
       }
       // proxy.$message({ type: "error", text: "用户名或密码错误" })
     };
 
+    // 倒计时逻辑
     // pase 暂停  resume 开始
     // useIntervalFn(回调函数，执行间隔，是否立即开启)
     const time = ref(0);
@@ -272,7 +274,16 @@ export default {
       1000,
       false
     );
+    // 销毁定时器
+    onUnmounted(() => {
+      pause();
+    });
+
     // 发送短信
+    // 1.发送验证码
+    // 1.1 绑定发送验证码按钮点击事件
+    // 1.2 校验手机号，如果成功就发送短信（API），请求成功开始倒计时，不能再次点击
+    // 1.3 如果失败，失败得校验样式显示出来
     const send = async () => {
       const valid = mySchema.mobile(form.mobile);
       if (valid === true) {
