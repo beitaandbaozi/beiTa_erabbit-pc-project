@@ -26,3 +26,12 @@ export const userMobileLoginMsg = (mobile) => {
 export const userMobileLogin = ({ mobile, code }) => {
   return request('/login/code', 'post', { mobile, code })
 }
+/**
+ * QQ登录
+ * @param {String} unionId - QQ唯一标识，openId
+ * @param {String} source - 客户端类型 1 PC
+ * @returns Promise
+ */
+export const userQQLogin = (unionId, source = 6) => {
+  return request('/login/social', 'post', { unionId, source })
+}
