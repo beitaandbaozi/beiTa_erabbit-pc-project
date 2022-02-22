@@ -35,13 +35,13 @@
       class="tab-content"
       v-if="hasAccount"
     >
-      <CallbackBind />
+      <CallbackBind :unionId="unionId"/>
     </div>
     <div
       class="tab-content"
       v-else
     >
-      <CallbackPatch />
+      <CallbackPatch :unionId="unionId"/>
     </div>
   </section>
   <LoginFooter />
@@ -73,9 +73,11 @@ export default {
     const isBind = ref(true)
     const store = useStore();
     const router = useRouter();
+    const unionId = ref(null)
     if (QC.Login.check()) {
       // 检查QQ是否登录
       QC.Login.getMe((openId) => {
+        unionId.value = openId
         userQQLogin(openId)
           .then((data) => {
             // 代表：使用qq登录成功
@@ -97,12 +99,12 @@ export default {
           })
           .catch((e) => {
             // 代表：使用qq登录失败===>1. 没绑定小兔鲜帐号  2. 没有小兔鲜帐号
-            // isBind.value = false;
+            isBind.value = false;
           });
       });
     }
 
-    return { hasAccount, isBind };
+    return { hasAccount, isBind, unionId };
   },
 };
 </script>

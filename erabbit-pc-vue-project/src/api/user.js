@@ -35,3 +35,21 @@ export const userMobileLogin = ({ mobile, code }) => {
 export const userQQLogin = (unionId, source = 6) => {
   return request('/login/social', 'post', { unionId, source })
 }
+/**
+ * 获取QQ绑定的时候短信验证码
+ * @param {String} mobile - 手机号
+ * @returns Promise
+ */
+export const userQQBindCode = (mobile) => {
+  return request('/login/social/code', 'get', { mobile })
+}
+/**
+ * 获取QQ绑定的时候短信验证码
+ * @param {String} unionId - QQ唯一标识，openId
+ * @param {String} mobile - 手机号
+ * @param {String} code - 验证码
+ * @returns Promise
+ */
+export const userQQBindLogin = ({ unionId, mobile, code }) => {
+  return request('/login/social/bind', 'post', { unionId, mobile, code })
+}
