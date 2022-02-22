@@ -38,7 +38,7 @@
       </div>
       <div class="error" v-if="errors.rePassword">{{errors.rePassword}}</div>
     </div>
-    <a href="javascript:;" class="submit">立即提交</a>
+    <a href="javascript:;" class="submit" @click="submit()">立即提交</a>
   </Form>
 </template>
 
@@ -46,9 +46,11 @@
 import { Form, Field } from 'vee-validate'
 import { reactive, onUnmounted, ref } from "vue";
 import schema from '@/utils/vee-validate-schema'
-import { userQQPatchCode } from "@/api/user"
+import { userQQPatchCode, userQQPatchLogin } from "@/api/user"
 import { useIntervalFn } from "@vueuse/core"
 import Message from '@/components/library/Message'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 export default {
   name: 'CallbackPatch',
   components: { Form, Field },
@@ -114,7 +116,29 @@ export default {
       }
     }
     // 3.完善信息
-    return { form, mySchema, formCom, time, send }
+    const store = useStore()
+    const router = useRouter()
+    const submit = async () => {
+      const valid = await formCom.value.validate()
+      if (valid) {
+        userQQPatchLogin({
+          unionId: props.unionId,
+          ...form
+        }).then(data => {
+          // 实现和之前登录一样的逻辑
+          // 1. 存储用户信息
+          const { id, account, avatar, mobile, nickname, token } = data.result
+          store.commit('user/setUser', { id, account, avatar, mobile, nickname, token })
+          // 2. 跳转到来源页或者首页
+          router.push(store.state.user.redirectUrl)
+          // 3. 成功提示
+          Message({ type: 'success', text: 'QQ完善信息成功' })
+        }).catch(e => {
+          Message({ type: 'error', text: '完善信息失败' })
+        })
+      }
+    }
+    return { form, mySchema, formCom, time, send, submit }
   }
 }
 </script>

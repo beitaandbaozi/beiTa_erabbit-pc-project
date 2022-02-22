@@ -69,3 +69,15 @@ export const userAccountCheck = (account) => {
 export const userQQPatchCode = (mobile) => {
   return request('/register/code', 'get', { mobile })
 }
+/**
+ * 获取QQ绑定的时候短信验证码
+ * @param {String} unionId - QQ唯一标识，openId
+ * @param {String} mobile - 手机号
+ * @param {String} code - 验证码
+ * @param {String} account - 账号
+ * @param {String} password - 密码
+ * @returns Promise
+ */
+export const userQQPatchLogin = ({ unionId, mobile, code, account, password }) => {
+  return request(`/login/social/${unionId}/complement`, 'post', { unionId, mobile, code, account, password })
+}
