@@ -61,3 +61,11 @@ export const userQQBindLogin = ({ unionId, mobile, code }) => {
 export const userAccountCheck = (account) => {
   return request('/register/check', 'get', { account })
 }
+/**
+ * 获取QQ完善信息的时候短信验证码
+ * @param {String} mobile - 手机号
+ * @returns Promise
+ */
+export const userQQPatchCode = (mobile) => {
+  return request('/register/code', 'get', { mobile })
+}
