@@ -53,3 +53,11 @@ export const userQQBindCode = (mobile) => {
 export const userQQBindLogin = ({ unionId, mobile, code }) => {
   return request('/login/social/bind', 'post', { unionId, mobile, code })
 }
+/**
+ * 校验注册是否存在
+ * @param {String} account - 用户名
+ * @returns Promise
+ */
+export const userAccountCheck = (account) => {
+  return request('/register/check', 'get', { account })
+}
