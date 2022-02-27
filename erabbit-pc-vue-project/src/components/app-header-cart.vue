@@ -1,13 +1,23 @@
 <template>
   <div class="cart">
-    <a class="curr" href="javascript:;">
+    <a
+      class="curr"
+      href="javascript:;"
+    >
       <i class="iconfont icon-cart"></i><em>{{$store.getters['cart/validTotal']}}</em>
     </a>
     <div class="layer">
       <div class="list">
-        <div class="item" v-for="goods in $store.getters['cart/validList']" :key="goods.skuId">
+        <div
+          class="item"
+          v-for="goods in $store.getters['cart/validList']"
+          :key="goods.skuId"
+        >
           <RouterLink to="">
-            <img :src="goods.picture" alt="">
+            <img
+              :src="goods.picture"
+              alt=""
+            >
             <div class="center">
               <p class="name ellipsis-2">{{goods.name}}</p>
               <p class="attr ellipsis">{{goods.attrsText}}</p>
@@ -31,9 +41,17 @@
   </div>
 </template>
 <script>
+import { useStore } from "vuex";
+import Message from "@/components/library/Message";
 export default {
-  name: 'AppHeaderCart'
-}
+  name: "AppHeaderCart",
+  setup () {
+    const store = useStore();
+    store.dispatch("cart/findCart").then(() => {
+      Message({ type: "success", text: "更新本地购物车成功！" });
+    });
+  },
+};
 </script>
 <style scoped lang="less">
 .cart {
@@ -66,19 +84,19 @@ export default {
   &:hover {
     .layer {
       opacity: 1;
-      transform: none
+      transform: none;
     }
   }
   .layer {
     opacity: 0;
-    transition: all .4s .2s;
+    transition: all 0.4s 0.2s;
     transform: translateY(-200px) scale(1, 0);
     width: 400px;
     height: 400px;
     position: absolute;
     top: 50px;
     right: 0;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     background: #fff;
     border-radius: 4px;
     padding-top: 10px;
@@ -90,8 +108,8 @@ export default {
       width: 20px;
       height: 20px;
       background: #fff;
-      transform: scale(0.6,1) rotate(45deg);
-      box-shadow: -3px -3px 5px rgba(0,0,0,0.1);
+      transform: scale(0.6, 1) rotate(45deg);
+      box-shadow: -3px -3px 5px rgba(0, 0, 0, 0.1);
     }
     .foot {
       position: absolute;
@@ -120,19 +138,19 @@ export default {
     height: 310px;
     overflow: auto;
     padding: 0 10px;
-    &::-webkit-scrollbar{
-      width:10px;
-      height:10px;
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
     }
-    &::-webkit-scrollbar-track{
+    &::-webkit-scrollbar-track {
       background: #f8f8f8;
       border-radius: 2px;
     }
-    &::-webkit-scrollbar-thumb{
+    &::-webkit-scrollbar-thumb {
       background: #eee;
-      border-radius:10px;
+      border-radius: 10px;
     }
-    &::-webkit-scrollbar-thumb:hover{
+    &::-webkit-scrollbar-thumb:hover {
       background: #ccc;
     }
     .item {
@@ -140,12 +158,12 @@ export default {
       padding: 10px 0;
       position: relative;
       i {
-          position: absolute;
-          bottom: 38px;
-          right: 0;
-          opacity: 0;
-          color: #666;
-          transition: all .5s;
+        position: absolute;
+        bottom: 38px;
+        right: 0;
+        opacity: 0;
+        color: #666;
+        transition: all 0.5s;
       }
       &:hover {
         i {
