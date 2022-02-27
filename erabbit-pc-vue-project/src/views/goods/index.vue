@@ -35,6 +35,7 @@
           <XtxButton
             type="primary"
             style="margin-top:20px;"
+            @click="insertCart()"
           >加入购物车</XtxButton>
         </div>
       </div>
@@ -69,7 +70,9 @@ import GoodsName from "./components/goods-name";
 import GoodsSku from "./components/goods-sku";
 import GoodsTabs from "./components/goods-tabs";
 import GoodsHot from "./components/goods-hot";
-import GoodsWarn from './components/goods-warn'
+import GoodsWarn from "./components/goods-warn";
+import { useStore } from "vuex";
+import Message from "@/components/library/Message";
 export default {
   name: "XtxGoodsPage",
   components: {
@@ -80,7 +83,7 @@ export default {
     GoodsSku,
     GoodsTabs,
     GoodsHot,
-    GoodsWarn
+    GoodsWarn,
   },
   setup () {
     // 1.获取商品详情，进行渲染
@@ -91,12 +94,48 @@ export default {
         goods.value.price = sku.price;
         goods.value.oldPrice = sku.oldPrice;
         goods.value.inventory = sku.inventory;
+        currSku.value = sku;
+      } else {
+        currSku.value = null;
       }
     };
+    // 选择的数量
     const count = ref(1);
+
     // 提供goods数据给后代组件使用
     provide("goods", goods);
-    return { goods, changeSku, count };
+
+    // 加入购物车
+    const store = useStore();
+    const currSku = ref(null);
+    const insertCart = () => {
+      // 约定加入购物车字段必选和后端保持一致
+      // 它们是：id skuId name attrsText picture price nowPrice selected stock count isEffective
+      if (currSku.value && currSku.value.skuId) {
+        const { skuId, specsText: attrsText, inventory: stock } = currSku.value;
+        const { id, name, price, mainPictures } = goods.value;
+        store
+          .dispatch("cart/insertCart", {
+            skuId,
+            attrsText,
+            stock,
+            id,
+            name,
+            price,
+            nowPrice: price,
+            picture: mainPictures[0],
+            count: count.value,
+            selected: true,
+            isEffective: true,
+          })
+          .then(() => {
+            Message({ type: "success", text: "加入购物车成功" });
+          });
+      } else {
+        Message({ text: "请选择完整规格" });
+      }
+    };
+    return { goods, changeSku, count, insertCart };
   },
 };
 // 获取商品详情
