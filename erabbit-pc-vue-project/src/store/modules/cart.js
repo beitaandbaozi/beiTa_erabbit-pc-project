@@ -98,6 +98,20 @@ export default {
           resolve()
         }
       })
+    },
+    // 修改购物车（选中状态，数量）
+    updateCart (ctx, payload) {
+      // payload 需要：必须有skuId 可能：selected count
+      return new Promise((resolve, reject) => {
+        if (ctx.rootState.user.profile.token) {
+          // TODO 已登录
+        } else {
+          // TODO 未登录
+          ctx.commit('updateCart', payload)
+          // resolve的目的是监听到上面事情做完
+          resolve()
+        }
+      })
     }
   },
   getters: {
