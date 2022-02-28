@@ -112,6 +112,21 @@ export default {
           resolve()
         }
       })
+    },
+    // 全选与取消全选
+    checkAllCart (ctx, selected) {
+      return new Promise((resolve, reject) => {
+        if (ctx.rootState.user.profile.token) {
+          // TODO 已登录
+        } else {
+          // TODO 未登录
+          ctx.getters.validList.forEach(goods => {
+            ctx.commit('updateCart', { skuId: goods.skuId, selected })
+          })
+          // resolve的目的是监听到上面事情做完
+          resolve()
+        }
+      })
     }
   },
   getters: {
