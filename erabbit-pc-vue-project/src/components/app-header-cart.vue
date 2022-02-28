@@ -1,12 +1,13 @@
 <template>
   <div class="cart">
-    <a
+    <!-- 点击购物车图标 去往购物车页面 -->
+    <RouterLink
       class="curr"
-      href="javascript:;"
+      to="/cart"
     >
       <i class="iconfont icon-cart"></i><em>{{$store.getters['cart/validTotal']}}</em>
-    </a>
-    <div class="layer">
+    </RouterLink>
+    <div class="layer" v-if="$store.getters['cart/validTotal'] > 0 && $route.path != '/cart'">
       <div class="list">
         <div
           class="item"
@@ -27,7 +28,10 @@
               <p class="count">{{goods.count}}</p>
             </div>
           </RouterLink>
-          <i class="iconfont icon-close-new"></i>
+          <i
+            class="iconfont icon-close-new"
+            @click="deleteCart(goods.skuId)"
+          ></i>
         </div>
       </div>
       <div class="foot">
@@ -50,6 +54,13 @@ export default {
     store.dispatch("cart/findCart").then(() => {
       Message({ type: "success", text: "更新本地购物车成功！" });
     });
+    // 删除购物车商品
+    const deleteCart = (skuId) => {
+      store.dispatch("cart/deleteCart", skuId).then(() => {
+        Message({ type: "success", text: "删除商品成功" });
+      });
+    };
+    return { deleteCart };
   },
 };
 </script>

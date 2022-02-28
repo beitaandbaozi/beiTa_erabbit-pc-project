@@ -38,6 +38,11 @@ export default {
           updateGoods[key] = goods[key]
         }
       }
+    },
+    // 删除购物车商品
+    deleteCart (state, skuId) {
+      const index = state.list.findIndex(item => item.skuId === skuId)
+      state.list.splice(index, 1)
     }
   },
   actions: {
@@ -59,7 +64,7 @@ export default {
         if (ctx.rootState.user.profile.token) {
           // TODO 已登录
         } else {
-          // 未登录
+          // TODO 未登录
           // ⭐ 同时发送请求（有几个商品发几个请求）等所有请求成功，一并去修改本地数据
           // Promise.all(promise数组).then((dataList) => {}) 同时发请求，所有请求成功，得到所有成功结果
           // Promise.resolve() Promise.reject() new Promise()
@@ -77,6 +82,20 @@ export default {
             // 调用resolve代表操作成功
             resolve()
           })
+        }
+      })
+    },
+    // 删除购物车
+    deleteCart (ctx, payload) {
+      return new Promise((resolve, reject) => {
+        if (ctx.rootState.user.profile.token) {
+          // TODO 已登录
+        } else {
+          // TODO 未登录
+          // 单条删除情况：payload 现在就是 skuId
+          ctx.commit('deleteCart', payload)
+          // resolve的目的是监听到上面事情做完
+          resolve()
         }
       })
     }
