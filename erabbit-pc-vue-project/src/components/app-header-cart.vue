@@ -14,7 +14,7 @@
           v-for="goods in $store.getters['cart/validList']"
           :key="goods.skuId"
         >
-          <RouterLink to="">
+          <RouterLink :to="`/product/${goods.id}`">
             <img
               :src="goods.picture"
               alt=""
@@ -39,7 +39,7 @@
           <p>共 {{$store.getters['cart/validTotal']}} 件商品</p>
           <p>&yen;{{$store.getters['cart/validAmount']}}</p>
         </div>
-        <XtxButton type="plain">去购物车结算</XtxButton>
+        <XtxButton type="plain" @click="$router.push('/cart')">去购物车结算</XtxButton>
       </div>
     </div>
   </div>
