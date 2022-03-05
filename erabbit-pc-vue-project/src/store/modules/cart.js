@@ -46,6 +46,21 @@ export default {
     }
   },
   actions: {
+    // 批量删除
+    batchDeleteCart (ctx) {
+      return new Promise((resolve, reject) => {
+        if (ctx.rootState.user.profile.token) {
+          // 已登录
+        } else {
+          // 未登录
+          // 找出选中的商品列表，遍历调用删除的mutations
+          ctx.getters.selectedList.forEach(item => {
+            ctx.commit('deleteCart', item.skuId)
+          })
+          resolve()
+        }
+      })
+    },
     // 加入购物车
     insertCart (ctx, payload) {
       return new Promise((resolve, reject) => {
