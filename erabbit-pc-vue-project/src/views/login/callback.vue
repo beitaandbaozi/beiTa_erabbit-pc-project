@@ -92,10 +92,13 @@ export default {
               nickname,
               token,
             });
-            // 2. 跳转到来源页或者首页
-            router.push(store.state.user.redirectUrl);
-            // 3. 成功提示
-            Message({ type: "success", text: "QQ登录成功" });
+            // 合并购物车
+            store.dispatch("cart/mergeCart").then(() => {
+              // 2. 跳转到来源页或者首页
+              router.push(store.state.user.redirectUrl);
+              // 3. 成功提示
+              Message({ type: "success", text: "QQ登录成功" });
+            });
           })
           .catch((e) => {
             // 代表：使用qq登录失败===>1. 没绑定小兔鲜帐号  2. 没有小兔鲜帐号
