@@ -56,7 +56,7 @@
                 <p v-if="goods.price - goods.nowPrice > 0">比加入时降价 <span class="red">&yen;{{goods.price - goods.nowPrice}}</span></p>
               </td>
               <td class="tc">
-                <XtxNumbox :modelValue="goods.count" />
+                <XtxNumbox @change="$event => updateCount(goods.skuId,$event)" :max="goods.stock" :modelValue="goods.count" />
               </td>
               <td class="tc">
                 <p class="f16 red">&yen;{{Math.round(goods.nowPrice * 100) * goods.count / 100}}</p>
@@ -185,7 +185,11 @@ export default {
           // console.log("取消");
         });
     }
-    return { checkOne, checkAll, deleteCart, batchDeleteCart };
+    // 修改数量
+    const updateCount = (skuId, count) => {
+      store.dispatch("cart/updateCart", { skuId, count });
+    }
+    return { checkOne, checkAll, deleteCart, batchDeleteCart, updateCount };
   },
 };
 </script>
