@@ -26,3 +26,10 @@ export const getGoodsSku = (skuId) => {
 export const mergeCart = (cartList) => {
   return request('/member/cart/merge', 'post', cartList)
 }
+
+/**
+ * 获取购物车列表
+ */
+export const findCart = () => {
+  return request('/member/cart', 'get')
+}

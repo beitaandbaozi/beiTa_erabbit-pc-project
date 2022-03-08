@@ -1,4 +1,4 @@
-import { getNewCartGoods, mergeCart } from '@/api/cart'
+import { getNewCartGoods, mergeCart, findCart } from '@/api/cart'
 // 购物车模块
 export default {
   namespaced: true,
@@ -118,6 +118,10 @@ export default {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
           // TODO 已登录
+          findCart().then(data => {
+            ctx.commit('setCart', data.result)
+            resolve()
+          })
         } else {
           // TODO 未登录
           // ⭐ 同时发送请求（有几个商品发几个请求）等所有请求成功，一并去修改本地数据
