@@ -1,4 +1,4 @@
-import { getNewCartGoods, mergeCart, findCart, insertCart, deleteCart } from '@/api/cart'
+import { getNewCartGoods, mergeCart, findCart, insertCart, deleteCart, updateCart } from '@/api/cart'
 // 购物车模块
 export default {
   namespaced: true,
@@ -185,6 +185,13 @@ export default {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
           // TODO 已登录
+          updateCart(payload).then(() => {
+            // 更新购物车
+            return findCart()
+          }).then(data => {
+            ctx.commit('setCart', data.result)
+            resolve()
+          })
         } else {
           // TODO 未登录
           ctx.commit('updateCart', payload)
