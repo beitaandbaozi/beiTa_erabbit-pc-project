@@ -1,4 +1,4 @@
-import { getNewCartGoods, mergeCart, findCart, insertCart } from '@/api/cart'
+import { getNewCartGoods, mergeCart, findCart, insertCart, deleteCart } from '@/api/cart'
 // 购物车模块
 export default {
   namespaced: true,
@@ -155,6 +155,13 @@ export default {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
           // TODO 已登录
+          deleteCart([payload]).then(() => {
+            // 更新购物车
+            return findCart()
+          }).then(data => {
+            ctx.commit('setCart', data.result)
+            resolve()
+          })
         } else {
           // TODO 未登录
           // 单条删除情况：payload 现在就是 skuId
