@@ -68,7 +68,20 @@ export default {
     updateCartSku (ctx, { oldSkuId, newSku }) {
       return new Promise((resolve, reject) => {
         if (ctx.rootState.user.profile.token) {
-          // 已登录
+          // TODO 已登录
+          // 1. 获取旧的商品信息
+          const oldGoods = ctx.state.list.find(item => item.skuId === oldSkuId)
+          // 2. 删除旧的商品
+          deleteCart([oldGoods.skuId]).then(() => {
+            // 3. 原先商品数量+新skuId
+            return insertCart({ skuId: newSku.skuId, count: oldGoods.count })
+          }).then(() => {
+            return findCart()
+          }).then(data => {
+            // 4. 去插入即可
+            ctx.commit('setCart', data.result)
+            resolve()
+          })
         } else {
           // 未登录
           // 但你修改了sku的时候其实skuId需要更改，相当于把原来的信息移出，创建一条新的商品信息。
