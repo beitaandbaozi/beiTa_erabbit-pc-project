@@ -1,13 +1,19 @@
 <template>
   <div class="checkout-address">
     <div class="text">
-      <!-- <div class="none">您需要先添加收货地址才可提交订单。</div> -->
-      <ul>
-        <li><span>收<i />货<i />人：</span>朱超</li>
-        <li><span>联系方式：</span>132****2222</li>
-        <li><span>收货地址：</span>海南省三亚市解放路108号物质大厦1003室</li>
+      <div
+        v-if="!showAddress"
+        class="none"
+      >您需要先添加收货地址才可提交订单。</div>
+      <ul v-if="showAddress">
+        <li><span>收<i />货<i />人：</span>{{showAddress.receiver}}</li>
+        <li><span>联系方式：</span>{{showAddress.contact.replace(/^(\d{3})\d{4}(\d{4})/,'$1****$2')}}</li>
+        <li><span>收货地址：</span>{{showAddress.fullLocation}}{{showAddress.address}}</li>
       </ul>
-      <a href="javascript:;">修改地址</a>
+      <a
+        v-if="showAddress"
+        href="javascript:;"
+      >修改地址</a>
     </div>
     <div class="action">
       <XtxButton class="btn">切换地址</XtxButton>
@@ -16,8 +22,32 @@
   </div>
 </template>
 <script>
+import { ref } from "vue";
 export default {
   name: "CheckoutAddress",
+  props: {
+    // 收货地址列表
+    list: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  setup (props) {
+    // 1. 找到默认收货地址
+    // 2. 没有默认收货地址，使用第一条收货地址
+    // 3. 如果没有数据，提示添加
+    const showAddress = ref(null);
+    const defaultAddress = props.list.find((item) => item.isDefault === 0);
+    if (defaultAddress) {
+      showAddress.value = defaultAddress;
+    } else {
+      if (props.list.length) {
+        // eslint-disable-next-line vue/no-setup-props-destructure
+        showAddress.value = props.list[0];
+      }
+    }
+    return { showAddress };
+  },
 };
 </script>
 <style scoped lang="less">
