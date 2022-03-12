@@ -9,6 +9,7 @@ const Goods = () => import('@/views/goods/index')
 const Login = () => import('@/views/login/index')
 const LoginCallback = () => import('@/views/login/callback')
 const Cart = () => import('@/views/cart/index')
+const PayCheckout = () => import('@/views/member/pay/checkout')
 // 路由规则
 const routes = [
   // 一级路由布局容器
@@ -21,6 +22,7 @@ const routes = [
       { path: '/category/sub/:id', component: SubCategory },
       { path: '/product/:id', component: Goods },
       { path: '/cart', component: Cart },
+      { path: '/member/checkout', component: PayCheckout }
     ]
   },
   { path: '/login', component: Login },
