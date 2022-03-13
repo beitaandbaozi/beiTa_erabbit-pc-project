@@ -16,10 +16,23 @@
       >修改地址</a>
     </div>
     <div class="action">
-      <XtxButton class="btn">切换地址</XtxButton>
+      <XtxButton class="btn" @click="visibleDialog = true">切换地址</XtxButton>
       <XtxButton class="btn">添加地址</XtxButton>
     </div>
   </div>
+  <!-- 对话框组件 -->
+  <XtxDialog title="切换收货地址" v-model:visible = "visibleDialog">
+    内容
+    <!-- vue3.0 仅支持v-slot+template写法 -->
+    <template v-slot:footer>
+      <XtxButton
+        type="gray"
+        style="margin-right:20px"
+        @click="visibleDialog=false"
+      >取消</XtxButton>
+      <XtxButton type="primary" @click="visibleDialog=false">确认</XtxButton>
+    </template>
+  </XtxDialog>
 </template>
 <script>
 import { ref } from "vue";
@@ -46,7 +59,10 @@ export default {
         showAddress.value = props.list[0];
       }
     }
-    return { showAddress };
+
+    // 显示与隐藏对话框
+    const visibleDialog = ref(false)
+    return { showAddress, visibleDialog };
   },
 };
 </script>
