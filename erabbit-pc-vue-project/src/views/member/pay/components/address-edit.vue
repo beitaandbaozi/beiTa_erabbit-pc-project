@@ -1,6 +1,6 @@
 <template>
   <XtxDialog
-    title="添加收货地址"
+    :title="`${formData.id?'修改':'添加'}收货地址`"
     v-model:visible="visibleDialog"
   >
     <div class="address-edit">
@@ -82,21 +82,28 @@
 </template>
 <script>
 import { reactive, ref } from "vue";
-import { addAddress } from "@/api/order";
+import { addAddress, editAddress } from "@/api/order";
 import Message from "@/components/library/Message";
 export default {
   name: "AddressEdit",
   setup (props, { emit }) {
     const visibleDialog = ref(false);
     // 定义一个open函数，作为打开对话框函数（组件实例拥有open函数）
-    const open = () => {
+    const open = (address) => {
       visibleDialog.value = true;
-      // 清空表单
-      for (const key in formData) {
-        if (key === "isDefault") {
-          formData[key] = 1;
-        } else {
-          formData[key] = null;
+      if (address.id) {
+        // 编辑表单
+        for (const key in address) {
+          formData[key] = address[key];
+        }
+      } else {
+        // 清空表单
+        for (const key in formData) {
+          if (key === "isDefault") {
+            formData[key] = 1;
+          } else {
+            formData[key] = null;
+          }
         }
       }
     };
@@ -125,13 +132,27 @@ export default {
     const submit = () => {
       // 1.表单校验 --------- 回南天 不写了  下次一定写
       // 2.连接接口
-      addAddress(formData).then((data) => {
-        // 添加成功
-        Message({ text: "添加收货地址成功", type: "success" });
-        formData.id = data.result.id;
-        visibleDialog.value = false;
-        emit("on-success", formData);
-      });
+      if (formData.id) {
+        // 修改地址
+        // 修改请求
+        editAddress(formData).then((data) => {
+          // 提示
+          Message({ type: "success", text: "修改收货地址成功" });
+          // 关闭
+          visibleDialog.value = false;
+          // 触发自定义事件
+          emit("on-success", formData);
+        });
+      } else {
+        // 添加地址
+        addAddress(formData).then((data) => {
+          // 添加成功
+          Message({ text: "添加收货地址成功", type: "success" });
+          formData.id = data.result.id;
+          visibleDialog.value = false;
+          emit("on-success", formData);
+        });
+      }
     };
     return { visibleDialog, open, formData, changeCity, submit };
   },

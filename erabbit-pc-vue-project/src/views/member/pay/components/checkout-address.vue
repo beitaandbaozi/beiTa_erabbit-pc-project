@@ -13,6 +13,7 @@
       <a
         v-if="showAddress"
         href="javascript:;"
+        @click="openAddressEdit(showAddress)"
       >修改地址</a>
     </div>
     <div class="action">
@@ -22,7 +23,7 @@
       >切换地址</XtxButton>
       <XtxButton
         class="btn"
-        @click="openAddressEdit"
+        @click="openAddressEdit({})"
       >添加地址</XtxButton>
     </div>
   </div>
@@ -121,17 +122,27 @@ export default {
 
     // 打开添加地址对话框
     const addressCom = ref(null);
-    const openAddressEdit = () => {
-      addressCom.value.open();
+    const openAddressEdit = (address) => {
+      // 添加传得是 {}  修改的时候传的是 数据
+      addressCom.value.open(address);
     };
 
     const successHandler = (formData) => {
-      // 当你在修改formData的时候，数组中的数据也会更新，因为是同一引用地址。
-      // 啥时候修改formData，当你打开对话框需要清空之前的输入信息
-      // 克隆formData数据
-      const jsonStr = JSON.stringify(formData);
-      // eslint-disable-next-line vue/no-mutating-props
-      props.list.unshift(JSON.parse(jsonStr));
+      // 查找id，如果本来就是存在的  说明是修改  否则是 添加
+      const address = props.list.find((item) => item.id === formData.id);
+      if (address) {
+        for (const key in address) {
+          address[key] = formData[key];
+        }
+      } else {
+        // 如果是添加：往list中追加一条
+        // 当你在修改formData的时候，数组中的数据也会更新，因为是同一引用地址。
+        // 啥时候修改formData，当你打开对话框需要清空之前的输入信息
+        // 克隆formData数据
+        const jsonStr = JSON.stringify(formData);
+        // eslint-disable-next-line vue/no-mutating-props
+        props.list.unshift(JSON.parse(jsonStr));
+      }
     };
     return {
       showAddress,
