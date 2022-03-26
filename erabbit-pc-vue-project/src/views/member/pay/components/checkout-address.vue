@@ -20,7 +20,10 @@
         class="btn"
         @click="openDialog()"
       >切换地址</XtxButton>
-      <XtxButton class="btn">添加地址</XtxButton>
+      <XtxButton
+        class="btn"
+        @click="openAddressEdit"
+      >添加地址</XtxButton>
     </div>
   </div>
   <!-- 对话框组件:切换收货地址 -->
@@ -55,11 +58,17 @@
     </template>
   </XtxDialog>
   <!-- 添加编辑组件：添加地址 -->
+  <AddressEdit
+    ref="addressCom"
+    @on-success="successHandler"
+  ></AddressEdit>
 </template>
 <script>
 import { ref } from "vue";
+import AddressEdit from "./address-edit.vue";
 export default {
   name: "CheckoutAddress",
+  components: { AddressEdit },
   props: {
     // 收货地址列表
     list: {
@@ -102,6 +111,7 @@ export default {
       // 3.关闭对话框
       visibleDialog.value = false;
     };
+
     // 打开对话框的时候
     const openDialog = () => {
       // 数据清空以便清除点击效果
@@ -109,12 +119,29 @@ export default {
       visibleDialog.value = true;
     };
 
+    // 打开添加地址对话框
+    const addressCom = ref(null);
+    const openAddressEdit = () => {
+      addressCom.value.open();
+    };
+
+    const successHandler = (formData) => {
+      // 当你在修改formData的时候，数组中的数据也会更新，因为是同一引用地址。
+      // 啥时候修改formData，当你打开对话框需要清空之前的输入信息
+      // 克隆formData数据
+      const jsonStr = JSON.stringify(formData);
+      // eslint-disable-next-line vue/no-mutating-props
+      props.list.unshift(JSON.parse(jsonStr));
+    };
     return {
       showAddress,
       visibleDialog,
       selectedAddress,
       confirmAddress,
       openDialog,
+      addressCom,
+      openAddressEdit,
+      successHandler,
     };
   },
 };

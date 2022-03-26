@@ -11,7 +11,7 @@
       <span
         class="placeholder"
         v-if="!fullLocation"
-      >请选择配送地址</span>
+      >{{placeholder}}</span>
       <span
         class="value"
         v-else
@@ -48,6 +48,10 @@ export default {
       type: String,
       default: "",
     },
+    placeholder: {
+      type: String,
+      default: '请选择配送地址'
+    }
   },
   setup (props, { emit }) {
     // 显示和隐藏数据
