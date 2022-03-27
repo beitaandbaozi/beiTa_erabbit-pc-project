@@ -33,7 +33,9 @@
           ></a>
           <a
             class="btn alipay"
-            href="javascript:;"
+            :href="payUrl"
+            target="_blank"
+            @click="visibleDialog = true"
           ></a>
         </div>
         <div class="item">
@@ -61,6 +63,24 @@
         </div>
       </div>
     </div>
+    <!-- 支付对话框 -->
+    <XtxDialog
+      title="正在支付..."
+      v-model:visible="visibleDialog"
+    >
+      <div class="pay-wait">
+        <img
+          src="@/assets/images/load.gif"
+          alt=""
+        >
+        <div v-if="order">
+          <p>如果支付成功：</p>
+          <RouterLink :to="`/member/order/${order.id}`">查看订单详情></RouterLink>
+          <p>如果支付失败：</p>
+          <RouterLink to="/">查看相关疑问></RouterLink>
+        </div>
+      </div>
+    </XtxDialog>
   </div>
 </template>
 <script>
@@ -68,6 +88,7 @@ import { ref } from "vue-demi";
 import { useRoute } from "vue-router";
 import { findOrder } from "@/api/order";
 import { usePayTime } from "@/hooks";
+import { baseURL } from "@/utils/request";
 export default {
   name: "XtxPayPage",
   setup (props) {
@@ -80,9 +101,17 @@ export default {
         start(data.result.countdown);
       }
     });
+    // 倒计时函数
     const { start, timeText } = usePayTime();
+    // 支付地址（后台服务基准地址+支付页面地址+订单ID+回跳地址）
+    const redirect = encodeURIComponent(
+      "http://www.corho.com:8080/#/pay/callback"
+    );
+    const payUrl = `${baseURL}pay/aliPay?orderId=${route.query.orderId}&redirect=${redirect}`;
 
-    return { order, timeText };
+    // 支付页面对话框
+    const visibleDialog = ref(false);
+    return { order, timeText, payUrl, visibleDialog };
   },
 };
 </script>
@@ -158,6 +187,17 @@ export default {
       background: url(https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/c66f98cff8649bd5ba722c2e8067c6ca.jpg)
         no-repeat center / contain;
     }
+  }
+}
+.pay-wait {
+  display: flex;
+  justify-content: space-around;
+  p {
+    margin-top: 30px;
+    font-size: 14px;
+  }
+  a {
+    color: @xtxColor;
   }
 }
 </style>
