@@ -9,5 +9,7 @@ import UI from '@/components/library'
 import 'normalize.css'
 // 引入自己项目的重置样式和公用样式
 import '@/assets/styles/common.less'
+// 引入mock
+import '@/mock'
 
 createApp(App).use(store).use(router).use(UI).mount('#app')

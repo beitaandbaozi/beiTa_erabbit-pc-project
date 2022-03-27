@@ -28,6 +28,7 @@ import HomeOverview from "./components/home-overview";
 import HomePanel from "./components/home-panel";
 import GoodsRelevant from "@/views/goods/components/goods-relevant";
 import GoodsItem from "@/views/category/components/goods-item";
+import request from "@/utils/request";
 export default {
   name: "MemberHome",
   components: { HomeOverview, HomePanel, GoodsRelevant, GoodsItem },
@@ -40,6 +41,12 @@ export default {
       desc: "清汤鲜香 红汤劲爽",
       price: "159.00",
     };
+
+    // 调用mock模拟的接口
+    request("/my/test", "get").then((data) => {
+      console.log(data);
+    });
+
     return { goods };
   },
 };
