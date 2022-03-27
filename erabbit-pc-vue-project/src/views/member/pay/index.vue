@@ -64,11 +64,10 @@
   </div>
 </template>
 <script>
-import { onUnmounted, ref } from "vue-demi";
+import { ref } from "vue-demi";
 import { useRoute } from "vue-router";
 import { findOrder } from "@/api/order";
-import { useIntervalFn } from "@vueuse/shared";
-import dayjs from "dayjs";
+import { usePayTime } from "@/hooks";
 export default {
   name: "XtxPayPage",
   setup (props) {
@@ -77,29 +76,13 @@ export default {
     const order = ref(null);
     findOrder(route.query.orderId).then((data) => {
       order.value = data.result;
-      time.value = data.result.countdown;
-      timeText.value = dayjs.unix(time.value).format("mm分ss秒");
-      resume();
+      if (data.result.countdown > -1) {
+        start(data.result.countdown);
+      }
     });
-    // 实现倒计时
-    const time = ref(0);
-    const timeText = ref("");
-    const { pause, resume } = useIntervalFn(
-      () => {
-        time.value--;
-        timeText.value = dayjs.unix(time.value).format("mm分ss秒");
-        if (time.value <= 0) {
-          pause();
-        }
-      },
-      1000,
-      false
-    );
-    onUnmounted(() => {
-      // 清空定时器
-      pause();
-    });
-    return { order, timeText, time };
+    const { start, timeText } = usePayTime();
+
+    return { order, timeText };
   },
 };
 </script>
