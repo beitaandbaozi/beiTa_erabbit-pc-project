@@ -5,9 +5,9 @@
     <!-- 收藏 -->
     <HomePanel title="我的收藏">
       <GoodsItem
-        v-for="i in 4"
-        :key="i"
-        :goods="goods"
+        v-for="item in collectGoods"
+        :key="item.id"
+        :goods="item"
       ></GoodsItem>
     </HomePanel>
     <!-- 足迹 -->
@@ -28,7 +28,8 @@ import HomeOverview from "./components/home-overview";
 import HomePanel from "./components/home-panel";
 import GoodsRelevant from "@/views/goods/components/goods-relevant";
 import GoodsItem from "@/views/category/components/goods-item";
-import request from "@/utils/request";
+import { findCollect } from "@/api/member";
+import { ref } from "vue";
 export default {
   name: "MemberHome",
   components: { HomeOverview, HomePanel, GoodsRelevant, GoodsItem },
@@ -43,11 +44,17 @@ export default {
     };
 
     // 调用mock模拟的接口
-    request("/my/test", "get").then((data) => {
-      console.log(data);
+    // request("/my/test", "get").then((data) => {
+    //   console.log(data);
+    // });
+
+    // 调用模拟的接口获取收藏数据
+    const collectGoods = ref([]);
+    findCollect({ page: 1, pageSize: 4 }).then((data) => {
+      collectGoods.value = data.result.items;
     });
 
-    return { goods };
+    return { goods, collectGoods };
   },
 };
 </script>
