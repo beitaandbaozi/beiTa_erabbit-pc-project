@@ -14,6 +14,7 @@ const Pay = () => import('@/views/member/pay/index')
 const PayResult = () => import('@/views/member/pay/result')
 const MemberLayout = () => import('@/views/member/Layout')
 const MemberHome = () => import('@/views/member/home')
+const MemberOrder = () => import('@/views/member/order')
 // 路由规则
 const routes = [
   // 一级路由布局容器
@@ -33,7 +34,8 @@ const routes = [
         path: '/member',
         component: MemberLayout,
         children: [
-          { path: '/member', component: MemberHome }
+          { path: '/member', component: MemberHome },
+          { path: '/member/order', component: MemberOrder }
         ]
       }
     ]
