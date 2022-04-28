@@ -4,6 +4,7 @@ import { provide } from "vue";
 export default {
   name: "XtxTabs",
   props: {
+    // v-model的双向绑定
     modelValue: {
       type: [String, Number],
       default: ""
@@ -15,8 +16,10 @@ export default {
     // 给每一个panel传当前激活的name
     provide("activeName", activeName);
     // 点击选项卡触发函数
-    const tabClick = (name) => {
+    const tabClick = (name, index) => {
       activeName.value = name;
+      // 提供一个tab-click自定义事件
+      emit("tab-click", { name, index });
     };
     return { activeName, tabClick };
   },
@@ -45,7 +48,7 @@ export default {
         {dynamicPanels.map((item, i) => {
           return (
             <a
-              onClick={() => this.tabClick(item.props.name)}
+              onClick={() => this.tabClick(item.props.name, i)}
               class={{ active: item.props.name === this.activeName }}
               href="javascript:;"
             >

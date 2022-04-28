@@ -1,6 +1,6 @@
 <template>
   <div>OrderMember</div>
-  <XtxTabs v-model="activeName">
+  <XtxTabs v-model="activeName" @tab-click="tabClick">
     <XtxTabsPanel label="选项卡0" name="first">内容0</XtxTabsPanel>
     <XtxTabsPanel
       v-for="(item, index) in 4"
@@ -18,7 +18,10 @@ export default {
   name: "OrderMember",
   setup () {
     const activeName = ref("name1");
-    return { activeName };
+    const tabClick = (tab) => {
+      console.log(tab);
+    };
+    return { activeName, tabClick };
   }
 };
 </script>
