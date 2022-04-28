@@ -1,29 +1,35 @@
 <template>
-  <div>OrderMember</div>
-  <XtxTabs v-model="activeName" @tab-click="tabClick">
-    <XtxTabsPanel label="选项卡0" name="first">内容0</XtxTabsPanel>
-    <XtxTabsPanel
-      v-for="(item, index) in 4"
-      :key="index + 1"
-      :label="`选项卡${index + 1}`"
-      :name="`name${index + 1}`"
-      >内容{{ index + 1 }}</XtxTabsPanel
-    >
-  </XtxTabs>
+  <div class="member-order">
+    <XtxTabs v-model="activeName" @tab-click="tabClick">
+      <XtxTabsPanel
+        v-for="item in orderStatus"
+        :key="item.name"
+        :label="item.label"
+        :name="item.name"
+        >{{ item.label }}</XtxTabsPanel
+      >
+    </XtxTabs>
+  </div>
 </template>
 
 <script>
 import { ref } from "vue";
+import { orderStatus } from "@/api/constants";
 export default {
   name: "OrderMember",
   setup () {
-    const activeName = ref("name1");
+    const activeName = ref("all");
     const tabClick = (tab) => {
       console.log(tab);
     };
-    return { activeName, tabClick };
+    return { activeName, tabClick, orderStatus };
   }
 };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.member-order {
+  height: 100%;
+  background-color: #fff;
+}
+</style>
