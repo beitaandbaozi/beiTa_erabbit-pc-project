@@ -119,7 +119,7 @@ export default {
   }
 };
 // 封装逻辑-取消订单
-const useCancelOrder = () => {
+export const useCancelOrder = () => {
   const orderCancelCom = ref(null);
   const onCancelOrder = (order) => {
     // console.log(order)
@@ -129,7 +129,7 @@ const useCancelOrder = () => {
   return { onCancelOrder, orderCancelCom };
 };
 // 封装逻辑-确认收货
-const useConfirmOrder = () => {
+export const useConfirmOrder = () => {
   const onConfirmOrder = (order) => {
     Confirm({ text: "您确认收到货吗？确认后货款将会打给卖家" })
       .then(() => {
