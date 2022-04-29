@@ -54,6 +54,7 @@ export default {
     flex: 1;
     &:first-child {
       .step {
+        // 对第一个处理
         &::before {
           display: none;
         }
@@ -61,6 +62,7 @@ export default {
     }
     &:last-child {
       .step {
+        // 对最后一个处理
         &::after {
           display: none;
         }

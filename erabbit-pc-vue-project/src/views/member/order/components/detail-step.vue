@@ -1,9 +1,11 @@
 <template>
   <div class="detail-step">
-    <XtxSteps :active="3">
-      <XtxStepsItem title="创建订单" desc="2022-04-30 10:10:10"></XtxStepsItem>
-      <XtxStepsItem title="已发货" desc="2022-04-30 10:10:10"></XtxStepsItem>
-      <XtxStepsItem title="完成订单" desc="2022-04-30 10:10:10"></XtxStepsItem>
+    <XtxSteps :active="order.orderState === 6 ? 1 : order.orderState">
+      <XtxStepsItem title="提交订单" :desc="order.createTime"></XtxStepsItem>
+      <XtxStepsItem title="付款成功" :desc="order.payTime"></XtxStepsItem>
+      <XtxStepsItem title="商品发货" :desc="order.consignTime"></XtxStepsItem>
+      <XtxStepsItem title="确认收货" :desc="order.endTime"></XtxStepsItem>
+      <XtxStepsItem title="订单完成" :desc="order.evaluationTime"></XtxStepsItem>
     </XtxSteps>
   </div>
 </template>
@@ -11,8 +13,18 @@
 <script>
 export default {
   name: "DetailStep",
+  props: {
+    order: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   setup () {}
 };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.detail-step {
+  padding: 20px;
+}
+</style>

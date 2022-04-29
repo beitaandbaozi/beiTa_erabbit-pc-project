@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <DetailAction :order="order"></DetailAction>
     <!-- 进度 -->
-    <DetailStep></DetailStep>
+    <DetailStep :order="order"></DetailStep>
     <!-- 物流 -->
     <!-- 信息 -->
   </div>
