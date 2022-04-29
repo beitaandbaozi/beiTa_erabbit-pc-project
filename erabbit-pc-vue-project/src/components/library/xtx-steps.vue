@@ -1,6 +1,12 @@
 <script>
 export default {
   name: "XtxSteps",
+  props: {
+    active: {
+      type: Number,
+      default: 1
+    }
+  },
   render () {
     // 1、获取到默认插槽的节点(XtxSteps下的XtxStepsItem的内容)
     const stepsItem = this.$slots.default();
@@ -26,7 +32,7 @@ export default {
      */
     const itemsJsx = dynamicItems.map((item, i) => {
       return (
-        <div class="xtx-steps-item">
+        <div class="xtx-steps-item" class={{ active: i < this.active }}>
           <div class="step">
             <span>{i + 1}</span>
           </div>
