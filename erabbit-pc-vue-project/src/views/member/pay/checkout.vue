@@ -6,10 +6,7 @@
         <XtxBreadItem to="/cart">购物车</XtxBreadItem>
         <XtxBreadItem>填写订单</XtxBreadItem>
       </XtxBread>
-      <div
-        class="wrapper"
-        v-if="order"
-      >
+      <div class="wrapper" v-if="order">
         <!-- 收货地址-->
         <h3 class="box-title">收货地址</h3>
         <div class="box-body">
@@ -32,29 +29,20 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="item in order.goods"
-                :key="item.skuId"
-              >
+              <tr v-for="item in order.goods" :key="item.skuId">
                 <td>
-                  <a
-                    href="javascript:;"
-                    class="info"
-                  >
-                    <img
-                      :src="item.picture"
-                      alt=""
-                    >
+                  <a href="javascript:;" class="info">
+                    <img :src="item.picture" alt="" />
                     <div class="right">
-                      <p>{{item.name}}</p>
-                      <p>{{item.attrsText}}</p>
+                      <p>{{ item.name }}</p>
+                      <p>{{ item.attrsText }}</p>
                     </div>
                   </a>
                 </td>
-                <td>&yen;{{item.price}}</td>
-                <td>{{item.count}}</td>
-                <td>&yen;{{item.totalPrice}}</td>
-                <td>&yen;{{item.totalPayPrice}}</td>
+                <td>&yen;{{ item.price }}</td>
+                <td>{{ item.count }}</td>
+                <td>&yen;{{ item.totalPrice }}</td>
+                <td>&yen;{{ item.totalPayPrice }}</td>
               </tr>
             </tbody>
           </table>
@@ -62,31 +50,18 @@
         <!-- 配送时间 -->
         <h3 class="box-title">配送时间</h3>
         <div class="box-body">
-          <a
-            class="my-btn active"
-            href="javascript:;"
-          >不限送货时间：周一至周日</a>
-          <a
-            class="my-btn"
-            href="javascript:;"
-          >工作日送货：周一至周五</a>
-          <a
-            class="my-btn"
-            href="javascript:;"
-          >双休日、假日送货：周六至周日</a>
+          <a class="my-btn active" href="javascript:;"
+            >不限送货时间：周一至周日</a
+          >
+          <a class="my-btn" href="javascript:;">工作日送货：周一至周五</a>
+          <a class="my-btn" href="javascript:;">双休日、假日送货：周六至周日</a>
         </div>
         <!-- 支付方式 -->
         <h3 class="box-title">支付方式</h3>
         <div class="box-body">
-          <a
-            class="my-btn active"
-            href="javascript:;"
-          >在线支付</a>
-          <a
-            class="my-btn"
-            href="javascript:;"
-          >货到付款</a>
-          <span style="color:#999">货到付款需付5元手续费</span>
+          <a class="my-btn active" href="javascript:;">在线支付</a>
+          <a class="my-btn" href="javascript:;">货到付款</a>
+          <span style="color: #999">货到付款需付5元手续费</span>
         </div>
         <!-- 金额明细 -->
         <h3 class="box-title">金额明细</h3>
@@ -94,28 +69,25 @@
           <div class="total">
             <dl>
               <dt>商品件数：</dt>
-              <dd>{{order.summary.goodsCount}}件</dd>
+              <dd>{{ order.summary.goodsCount }}件</dd>
             </dl>
             <dl>
               <dt>商品总价：</dt>
-              <dd>¥{{order.summary.totalPrice}}</dd>
+              <dd>¥{{ order.summary.totalPrice }}</dd>
             </dl>
             <dl>
               <dt>运<i></i>费：</dt>
-              <dd>¥{{order.summary.postFee}}</dd>
+              <dd>¥{{ order.summary.postFee }}</dd>
             </dl>
             <dl>
               <dt>应付总额：</dt>
-              <dd class="price">¥{{order.summary.totalPayPrice}}</dd>
+              <dd class="price">¥{{ order.summary.totalPayPrice }}</dd>
             </dl>
           </div>
         </div>
         <!-- 提交订单 -->
         <div class="submit">
-          <XtxButton
-            @click="submitOrderFn"
-            type="primary"
-          >提交订单</XtxButton>
+          <XtxButton @click="submitOrderFn" type="primary">提交订单</XtxButton>
         </div>
       </div>
     </div>
@@ -123,23 +95,36 @@
 </template>
 <script>
 import CheckoutAddress from "./components/checkout-address.vue";
-import { createOrder, submitOrder } from "@/api/order";
+import { createOrder, submitOrder, repurchaseOrder } from "@/api/order";
 import { reactive, ref } from "vue";
 import Message from "@/components/library/Message";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 export default {
   name: "XtxPayCheckoutPage",
   components: { CheckoutAddress },
   setup () {
     // 生成订单信息
     const order = ref(null);
-    createOrder().then((data) => {
-      order.value = data.result;
-      reqParams.goods = data.result.goods.map(({ skuId, count }) => ({
-        skuId,
-        count,
-      }));
-    });
+    const route = useRoute();
+    if (route.query.orderId) {
+      // 按照订单中商品结算
+      repurchaseOrder(route.query.orderId).then((data) => {
+        order.value = data.result;
+        reqParams.goods = data.result.goods.map(({ skuId, count }) => ({
+          skuId,
+          count
+        }));
+      });
+    } else {
+      // 按照购物车商品结算
+      createOrder().then((data) => {
+        order.value = data.result;
+        reqParams.goods = data.result.goods.map(({ skuId, count }) => ({
+          skuId,
+          count
+        }));
+      });
+    }
 
     // 提交订单-提交信息
     const reqParams = reactive({
@@ -150,7 +135,7 @@ export default {
       // 商品信息，获取订单信息后设置
       goods: [],
       // 收货地址，切换收货地址或者组件默认的时候设置
-      addressId: null,
+      addressId: null
     });
 
     // 提交订单：需要收货地址ID
@@ -173,7 +158,7 @@ export default {
       });
     };
     return { order, changeAddress, submitOrderFn };
-  },
+  }
 };
 </script>
 <style scoped lang="less">

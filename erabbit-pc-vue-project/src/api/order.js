@@ -1,11 +1,18 @@
 // 订单相关的API
 
 import request from '@/utils/request'
-// 结算页面-生成订单
+// 结算页面-生成订单-根据购物车选中商品
 export const createOrder = () => {
   return request('/member/order/pre', 'get')
 }
-
+/**
+ * 获取再次购买的订单结算信息
+ * @param {String} id - 订单ID
+ * @returns
+ */
+export const repurchaseOrder = (orderId) => {
+  return request(`/member/order/repurchase/${orderId}`, 'get')
+}
 /**
  * 添加收货地址
  * @param {Object} form - 参考接口文档
