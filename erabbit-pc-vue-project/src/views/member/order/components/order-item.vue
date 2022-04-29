@@ -63,7 +63,11 @@
         <XtxButton v-if="order.orderState === 1" type="primary" size="small"
           >立即付款</XtxButton
         >
-        <XtxButton v-if="order.orderState === 3" type="primary" size="small"
+        <XtxButton
+          @click="$emit('on-confirm-order', order)"
+          v-if="order.orderState === 3"
+          type="primary"
+          size="small"
           >确认收货</XtxButton
         >
         <p>
@@ -95,7 +99,7 @@ import { orderStatus } from "@/api/constants";
 import { usePayTime } from "@/hooks";
 export default {
   name: "OrderItem",
-  emits: ["on-cancel-order", "on-delete-order"],
+  emits: ["on-cancel-order", "on-delete-order", "on-confirm-order"],
   props: {
     order: {
       type: Object,

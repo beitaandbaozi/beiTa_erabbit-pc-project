@@ -15,6 +15,7 @@
       <OrderItem
         @on-cancel-order="onCancelOrder"
         @on-delete-order="onDeleteOrder"
+        @on-confirm-order="onConfirmOrder"
         v-for="item in orderList"
         :key="item.id"
         :order="item"
@@ -38,9 +39,9 @@ import { reactive, ref, watch } from "vue";
 import { orderStatus } from "@/api/constants";
 import OrderItem from "./components/order-item";
 import OrderCancel from "./components/order-cancel";
-import { findOrderList, deleteOrder } from "@/api/order";
-import Confirm from '@/components/library/Confirm'
-import Message from '@/components/library/Message'
+import { findOrderList, deleteOrder, confirmOrder } from "@/api/order";
+import Confirm from "@/components/library/Confirm";
+import Message from "@/components/library/Message";
 export default {
   name: "OrderMember",
   components: { OrderItem, OrderCancel },
@@ -107,7 +108,8 @@ export default {
       reqParams,
       pageChange,
       onDeleteOrder,
-      ...useCancelOrder()
+      ...useCancelOrder(),
+      ...useConfirmOrder()
     };
   }
 };
@@ -120,6 +122,21 @@ const useCancelOrder = () => {
     orderCancelCom.value.open(order);
   };
   return { onCancelOrder, orderCancelCom };
+};
+// 封装逻辑-确认收货
+const useConfirmOrder = () => {
+  const onConfirmOrder = (order) => {
+    Confirm({ text: "您确认收到货吗？确认后货款将会打给卖家" })
+      .then(() => {
+        confirmOrder(order.id).then(() => {
+          Message({ text: "确认收货成功", type: "success" });
+          // 更改订单状态
+          order.orderState = 4
+        });
+      })
+      .catch((e) => {});
+  };
+  return { onConfirmOrder };
 };
 </script>
 
