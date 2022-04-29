@@ -6,11 +6,11 @@
       <!-- 未付款，倒计时时间还有 -->
       <span class="down-time" v-if="order.orderState === 1">
         <i class="iconfont icon-down-time"></i>
-        <b>付款截止：{{ countdownText }}</b>
+        <b>付款截止：{{ timeText }}</b>
       </span>
       <!-- 已完成 已取消 -->
       <a
-        v-if="[5, 6].includes(order.orederState)"
+        v-if="[5, 6].includes(order.orderState)"
         href="javascript:;"
         class="del"
         >删除</a
@@ -65,8 +65,19 @@
         <XtxButton v-if="order.orderState === 3" type="primary" size="small"
           >确认收货</XtxButton
         >
-        <p><a href="javascript:;">查看详情</a></p>
-        <p v-if="order.orderState === 1"><a href="javascript:;">取消订单</a></p>
+        <p>
+          <a
+            @click="$router.push(`/member/order/${order.id}`)"
+            href="javascript:;"
+            >查看详情</a
+          >
+        </p>
+        <p
+          @click="$emit('on-cancel-order', order)"
+          v-if="order.orderState === 1"
+        >
+          <a href="javascript:;">取消订单</a>
+        </p>
         <p v-if="[2, 3, 4, 5].includes(order.orderState)">
           <a href="javascript:;">再次购买</a>
         </p>

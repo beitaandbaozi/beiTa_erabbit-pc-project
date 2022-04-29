@@ -13,6 +13,7 @@
       <div v-if="loading" class="loading"></div>
       <div class="none" v-if="!loading && orderList.length === 0">暂无数据</div>
       <OrderItem
+        @on-cancel-order="onCancelOrder"
         v-for="item in orderList"
         :key="item.id"
         :order="item"
@@ -27,16 +28,19 @@
       @current-change="pageChange"
     ></XtxPagination>
   </div>
+  <!-- 取消订单组件 -->
+  <OrderCancel ref="orderCancelCom"/>
 </template>
 
 <script>
 import { reactive, ref, watch } from "vue";
 import { orderStatus } from "@/api/constants";
 import OrderItem from "./components/order-item";
+import OrderCancel from "./components/order-cancel";
 import { findOrderList } from "@/api/order";
 export default {
   name: "OrderMember",
-  components: { OrderItem },
+  components: { OrderItem, OrderCancel },
   setup () {
     const activeName = ref("all");
     const orderList = ref([]);
@@ -84,10 +88,21 @@ export default {
       loading,
       total,
       reqParams,
-      pageChange
+      pageChange,
+      ...useCancelOrder()
     };
   }
 };
+// 封装逻辑-取消订单
+const useCancelOrder = () => {
+  const orderCancelCom = ref(null)
+  const onCancelOrder = (order) => {
+    // console.log(order)
+    // item 就是你要取消的订单
+    orderCancelCom.value.open(order)
+  }
+  return { onCancelOrder, orderCancelCom }
+}
 </script>
 
 <style lang="less" scoped>
