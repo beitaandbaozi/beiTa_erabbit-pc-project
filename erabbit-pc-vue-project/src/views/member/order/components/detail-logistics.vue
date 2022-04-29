@@ -4,12 +4,19 @@
       <span>{{ list[0].text }}</span>
       <span>{{ list[0].time }}</span>
     </p>
-    <a href="javascript:;">查看物流</a>
+    <a href="javascript:;" @click="onLogisticsOrder(order)">查看物流</a>
+    <!-- 物流信息 -->
+    <!-- 传送门 -->
+    <Teleport to="#model">
+      <OrderLogistics ref="orderLogisticsCom" />
+    </Teleport>
   </div>
 </template>
 <script>
 import { logisticsOrder } from "@/api/order";
-import { ref } from 'vue';
+import { ref } from "vue";
+import OrderLogistics from "./order-logistics";
+import { useLogisticsOrder } from "../index.vue";
 export default {
   name: "DetailLogistics",
   props: {
@@ -18,11 +25,12 @@ export default {
       default: () => ({})
     }
   },
+  components: { OrderLogistics },
   // 组件实例化的时候需要执行setup函数渲染数据
   async setup (props) {
     const data = await logisticsOrder(props.order.id);
     const list = ref(data.result.list);
-    return { list };
+    return { list, ...useLogisticsOrder() };
   }
 };
 </script>

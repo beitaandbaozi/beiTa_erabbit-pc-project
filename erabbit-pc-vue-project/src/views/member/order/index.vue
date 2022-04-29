@@ -144,10 +144,10 @@ const useConfirmOrder = () => {
   return { onConfirmOrder };
 };
 // 查看物流信息
-const useLogisticsOrder = () => {
+export const useLogisticsOrder = () => {
   const orderLogisticsCom = ref(null);
   const onLogisticsOrder = (order) => {
-    console.log(order)
+    console.log(order);
     orderLogisticsCom.value.open(order);
   };
   return { onLogisticsOrder, orderLogisticsCom };
