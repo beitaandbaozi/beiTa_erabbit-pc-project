@@ -19,7 +19,13 @@
       ></OrderItem>
     </div>
     <!-- 分页组件 -->
-    <XtxPagination></XtxPagination>
+    <XtxPagination
+      v-if="total > 0"
+      :total="total"
+      :current-page="reqParams.page"
+      :page-size="reqParams.pageSize"
+      @current-change="pageChange"
+    ></XtxPagination>
   </div>
 </template>
 
@@ -40,6 +46,7 @@ export default {
       orderState: 0
     });
     const loading = ref(false);
+    const total = ref(0);
     // 条件渲染
     const tabClick = ({ index }) => {
       // 1.初始化页数
@@ -55,6 +62,7 @@ export default {
         loading.value = true;
         findOrderList(reqParams).then((data) => {
           orderList.value = data.result.items;
+          total.value = data.result.counts;
           loading.value = false;
         });
       },
@@ -64,7 +72,20 @@ export default {
     // findOrderList(reqParams).then((data) => {
     //   orderList.value = data.result.items;
     // });
-    return { activeName, tabClick, orderStatus, orderList, loading };
+    // 页数改变时
+    const pageChange = (index) => {
+      reqParams.page = index;
+    };
+    return {
+      activeName,
+      tabClick,
+      orderStatus,
+      orderList,
+      loading,
+      total,
+      reqParams,
+      pageChange
+    };
   }
 };
 </script>
