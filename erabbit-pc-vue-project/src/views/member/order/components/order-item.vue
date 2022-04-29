@@ -10,6 +10,7 @@
       </span>
       <!-- 已完成 已取消 -->
       <a
+        @click="$emit('on-delete-order', order)"
         v-if="[5, 6].includes(order.orderState)"
         href="javascript:;"
         class="del"
@@ -94,6 +95,7 @@ import { orderStatus } from "@/api/constants";
 import { usePayTime } from "@/hooks";
 export default {
   name: "OrderItem",
+  emits: ["on-cancel-order", "on-delete-order"],
   props: {
     order: {
       type: Object,

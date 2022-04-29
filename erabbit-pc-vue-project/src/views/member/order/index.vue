@@ -14,6 +14,7 @@
       <div class="none" v-if="!loading && orderList.length === 0">暂无数据</div>
       <OrderItem
         @on-cancel-order="onCancelOrder"
+        @on-delete-order="onDeleteOrder"
         v-for="item in orderList"
         :key="item.id"
         :order="item"
@@ -29,7 +30,7 @@
     ></XtxPagination>
   </div>
   <!-- 取消订单组件 -->
-  <OrderCancel ref="orderCancelCom"/>
+  <OrderCancel ref="orderCancelCom" />
 </template>
 
 <script>
@@ -37,7 +38,9 @@ import { reactive, ref, watch } from "vue";
 import { orderStatus } from "@/api/constants";
 import OrderItem from "./components/order-item";
 import OrderCancel from "./components/order-cancel";
-import { findOrderList } from "@/api/order";
+import { findOrderList, deleteOrder } from "@/api/order";
+import Confirm from '@/components/library/Confirm'
+import Message from '@/components/library/Message'
 export default {
   name: "OrderMember",
   components: { OrderItem, OrderCancel },
@@ -59,16 +62,19 @@ export default {
       reqParams.orderState = index;
       // 3.重新加载
     };
+    const findOrderListFn = () => {
+      loading.value = true;
+      findOrderList(reqParams).then((data) => {
+        orderList.value = data.result.items;
+        total.value = data.result.counts;
+        loading.value = false;
+      });
+    };
     // 根据点击tab时 orderState类型发生变化，就重新加载
     watch(
       reqParams,
       () => {
-        loading.value = true;
-        findOrderList(reqParams).then((data) => {
-          orderList.value = data.result.items;
-          total.value = data.result.counts;
-          loading.value = false;
-        });
+        findOrderListFn();
       },
       { immediate: true }
     );
@@ -80,6 +86,17 @@ export default {
     const pageChange = (index) => {
       reqParams.page = index;
     };
+    // 删除订单
+    const onDeleteOrder = (order) => {
+      Confirm({ text: "您确认删除该条订单吗？" })
+        .then(() => {
+          deleteOrder([order.id]).then(() => {
+            Message({ text: "删除订单成功", type: "success" });
+            findOrderListFn();
+          });
+        })
+        .catch((e) => {});
+    };
     return {
       activeName,
       tabClick,
@@ -89,20 +106,21 @@ export default {
       total,
       reqParams,
       pageChange,
+      onDeleteOrder,
       ...useCancelOrder()
     };
   }
 };
 // 封装逻辑-取消订单
 const useCancelOrder = () => {
-  const orderCancelCom = ref(null)
+  const orderCancelCom = ref(null);
   const onCancelOrder = (order) => {
     // console.log(order)
     // item 就是你要取消的订单
-    orderCancelCom.value.open(order)
-  }
-  return { onCancelOrder, orderCancelCom }
-}
+    orderCancelCom.value.open(order);
+  };
+  return { onCancelOrder, orderCancelCom };
+};
 </script>
 
 <style lang="less" scoped>

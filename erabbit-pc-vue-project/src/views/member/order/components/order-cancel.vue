@@ -36,7 +36,6 @@ import { cancelOrder } from "@/api/order";
 export default {
   name: "OrderCancel",
   // 组件本身触发的自定义事件可以在这里申明
-  emits: ["on-cancel-order"],
   setup () {
     const visibleDialog = ref(false);
     // 选中原因
