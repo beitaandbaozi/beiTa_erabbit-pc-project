@@ -16,6 +16,7 @@
         @on-cancel-order="onCancelOrder"
         @on-delete-order="onDeleteOrder"
         @on-confirm-order="onConfirmOrder"
+        @on-logistics-order="onLogisticsOrder"
         v-for="item in orderList"
         :key="item.id"
         :order="item"
@@ -32,6 +33,8 @@
   </div>
   <!-- 取消订单组件 -->
   <OrderCancel ref="orderCancelCom" />
+  <!-- 物流信息 -->
+  <OrderLogistics ref="orderLogisticsCom" />
 </template>
 
 <script>
@@ -39,12 +42,13 @@ import { reactive, ref, watch } from "vue";
 import { orderStatus } from "@/api/constants";
 import OrderItem from "./components/order-item";
 import OrderCancel from "./components/order-cancel";
+import OrderLogistics from "./components/order-logistics";
 import { findOrderList, deleteOrder, confirmOrder } from "@/api/order";
 import Confirm from "@/components/library/Confirm";
 import Message from "@/components/library/Message";
 export default {
   name: "OrderMember",
-  components: { OrderItem, OrderCancel },
+  components: { OrderItem, OrderCancel, OrderLogistics },
   setup () {
     const activeName = ref("all");
     const orderList = ref([]);
@@ -109,7 +113,8 @@ export default {
       pageChange,
       onDeleteOrder,
       ...useCancelOrder(),
-      ...useConfirmOrder()
+      ...useConfirmOrder(),
+      ...useLogisticsOrder()
     };
   }
 };
@@ -131,12 +136,21 @@ const useConfirmOrder = () => {
         confirmOrder(order.id).then(() => {
           Message({ text: "确认收货成功", type: "success" });
           // 更改订单状态
-          order.orderState = 4
+          order.orderState = 4;
         });
       })
       .catch((e) => {});
   };
   return { onConfirmOrder };
+};
+// 查看物流信息
+const useLogisticsOrder = () => {
+  const orderLogisticsCom = ref(null);
+  const onLogisticsOrder = (order) => {
+    console.log(order)
+    orderLogisticsCom.value.open(order);
+  };
+  return { onLogisticsOrder, orderLogisticsCom };
 };
 </script>
 
