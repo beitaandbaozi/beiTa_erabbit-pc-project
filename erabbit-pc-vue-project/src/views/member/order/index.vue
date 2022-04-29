@@ -10,6 +10,8 @@
     </XtxTabs>
     <!-- 订单列表 -->
     <div class="order-list">
+      <div v-if="loading" class="loading"></div>
+      <div class="none" v-if="!loading && orderList.length === 0">暂无数据</div>
       <OrderItem
         v-for="item in orderList"
         :key="item.id"
@@ -37,6 +39,7 @@ export default {
       pageSize: 5,
       orderState: 0
     });
+    const loading = ref(false);
     // 条件渲染
     const tabClick = ({ index }) => {
       // 1.初始化页数
@@ -49,8 +52,10 @@ export default {
     watch(
       reqParams,
       () => {
+        loading.value = true;
         findOrderList(reqParams).then((data) => {
           orderList.value = data.result.items;
+          loading.value = false;
         });
       },
       { immediate: true }
@@ -59,7 +64,7 @@ export default {
     // findOrderList(reqParams).then((data) => {
     //   orderList.value = data.result.items;
     // });
-    return { activeName, tabClick, orderStatus, orderList };
+    return { activeName, tabClick, orderStatus, orderList, loading };
   }
 };
 </script>
@@ -70,6 +75,23 @@ export default {
   background-color: #fff;
   .order-list {
     padding: 20px;
+    position: relative;
+    min-height: 400px;
+  }
+  .loading {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: rgba(255, 255, 255, 0.9) url(../../../assets/images/loading.gif)
+      no-repeat center;
+  }
+  .none {
+    height: 400px;
+    text-align: center;
+    line-height: 400px;
+    color: #999;
   }
 }
 </style>
