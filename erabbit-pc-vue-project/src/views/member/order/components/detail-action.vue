@@ -27,7 +27,7 @@
       </template>
       <!-- 待收货 -->
       <template v-if="order.orderState === 3">
-        <XtxButton type="primary" size="small">确认收货</XtxButton>
+        <XtxButton type="primary" size="small" @click="onConfirmOrder(order)">确认收货</XtxButton>
         <XtxButton type="plain" size="small">再次购买</XtxButton>
       </template>
       <!-- 待评价 -->
@@ -52,7 +52,7 @@
 <script>
 import { orderStatus } from "@/api/constants";
 import OrderCancel from "./order-cancel";
-import { useCancelOrder } from "../index.vue";
+import { useCancelOrder, useConfirmOrder } from "../index.vue";
 export default {
   name: "OrderDetailAction",
   components: { OrderCancel },
@@ -63,7 +63,7 @@ export default {
     }
   },
   setup () {
-    return { orderStatus, ...useCancelOrder() };
+    return { orderStatus, ...useCancelOrder(), ...useConfirmOrder() };
   }
 };
 </script>
