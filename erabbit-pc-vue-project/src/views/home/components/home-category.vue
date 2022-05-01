@@ -18,8 +18,8 @@
         </template>
         <!-- 骨架 -->
         <template v-else>
-           <XtxSkeleton width="60px" height="18px" style="margin-right:5px" bg="rgba(255,255,255,0.2)" animated/>
-+          <XtxSkeleton width="50px" height="18px" bg="rgba(255,255,255,0.2)" animated/>
+          <XtxSkeleton width="60px" height="18px" style="margin-right:5px" bg="rgba(255,255,255,0.2)" animated/>
+          <XtxSkeleton width="50px" height="18px" bg="rgba(255,255,255,0.2)" animated/>
         </template>
       </li>
     </ul>
